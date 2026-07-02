@@ -1,0 +1,182 @@
+---
+name: plano-acao
+description: >
+  Cria o plano de ação (planejamento de campanha) para um cliente novo e gera o PDF no padrão
+  da Arttico. Diagnostica nicho + verba, recomenda plataforma (Meta / Google / ambos) pra
+  aprovação e, depois de aprovado, detalha a campanha: no Google (objetivo, palavras-chave,
+  títulos, descrições, sitelinks) e/ou no Meta (objetivo e criativos por funil), o avatar
+  (público-alvo com boneco, dores e desejos), além do funil do lead até o comercial. Gera um deck
+  de slides 16:9 no padrão visual da Arttico (sistema "Disciplina Ártica": navy + branco,
+  Montserrat + Inter) em PDF e depois exporta pro Canva. O deck só inclui a plataforma escolhida.
+  O direcionamento de criativos (roteiros de peça por funil) é uma skill separada:
+  `direcionamento-criativos`.
+  Use quando o usuário disser "plano de ação", "planejamento de campanha", "monta o plano pro
+  cliente X", "cliente novo, faz o planejamento", "plano de mídia". Também dispara com /plano-acao.
+---
+
+# /plano-acao — Plano de Ação (Planejamento de Campanha)
+
+## Contexto
+Ler antes de começar: `_contexto/empresa.md`, `_contexto/preferencias.md`, `_contexto/estrategia.md`
+e `marca/design-guide.md`. Tom: estratégico, direto, persuasivo, orientado a conversão. Sem
+travessões. Sem promessas vagas.
+
+## Parâmetros
+- **cliente** — nome da pasta do cliente (ex: `igor-flor`). Se não vier, perguntar e listar as
+  pastas de `clientes/` (exceto `_modelo-cliente`).
+
+---
+
+## Fluxo
+
+O fluxo tem **dois checkpoints de aprovação**. Não pular nenhum.
+
+### 1. Ler o briefing do cliente
+- Ler `clientes/[cliente]/briefing.md`.
+- Extrair: `Cliente`, `Segmento`/nicho, `Objetivo principal`, `Público-alvo`, `Budget mensal`,
+  `Opera em`, `Site`.
+- Se o briefing estiver incompleto nos campos críticos (nicho, objetivo, verba, público),
+  perguntar o que faltar antes de seguir. Não inventar.
+
+### 2. CHECKPOINT 1 — Recomendar plataforma (pra aprovação)
+Com base em **nicho + verba + objetivo**, recomendar **Meta**, **Google** ou **ambos**, com
+justificativa curta e específica. Considerar:
+
+- **Google** quando há demanda ativa / intenção de busca (a pessoa procura a solução): serviços
+  locais, urgência, comparação, B2B de nicho, ticket alto com pesquisa. Captura quem já está
+  procurando.
+- **Meta** quando é demanda latente / descoberta: produto/serviço que precisa ser apresentado,
+  apelo visual, público definido por interesse e comportamento, topo de funil e remarketing.
+- **Ambos** quando a verba comporta dividir sem pulverizar (regra prática: abaixo de ~R$2k/mês
+  evitar dividir; concentrar onde o retorno é mais provável) e o objetivo justifica capturar
+  demanda ativa (Google) + gerar demanda (Meta).
+
+Apresentar assim e **parar pra aprovação**:
+
+> **Recomendação de plataforma — [Cliente]**
+> Nicho: [...] · Verba: [R$ ...] · Objetivo: [...]
+> **Plataforma sugerida: [Meta / Google / Ambos]**
+> Por quê: [2-3 linhas]
+> Distribuição de verba (se ambos): [ex: 60% Meta / 40% Google]
+>
+> Aprova essa direção ou quer ajustar?
+
+Não montar o conteúdo detalhado antes da aprovação.
+
+### 3. Após aprovação — montar o conteúdo (condicional à plataforma)
+
+Montar **somente** os blocos da(s) plataforma(s) aprovada(s).
+
+**Sempre (independente da plataforma):**
+- **Estratégia + plataforma**: diagnóstico do nicho/verba, plataforma escolhida + justificativa,
+  distribuição de verba e objetivo geral.
+- **Avatar (público-alvo)**: quem é a pessoa que vai ser impactada. O slide tem um **boneco
+  line-art** (persona) com uma **ficha** ao lado e duas listas. A ficha (`{{AVATAR_FICHA}}`) são
+  ~4 linhas `<div class="pf"><span class="pk">Rótulo</span><span class="pv">Valor</span></div>`
+  (ex: Idade, Perfil, Decisor/Onde, Momento). As listas são **dores** (o que incomoda, o medo, a
+  frustração, o que tentou e não funcionou) e **desejos** (o que quer de verdade, a transformação).
+  No deck 16:9 os itens de dores/desejos precisam caber em **1 linha** (texto curto, ~30 caracteres),
+  senão estouram. Tirar do briefing (`Público-alvo`, objetivo, segmento) e do nicho real. Esse
+  avatar é a base do direcionamento de criativos (skill `direcionamento-criativos`). Ser
+  específico, nada genérico.
+
+**Se Google (só Google ou ambos):**
+- **Objetivo de campanha** (ex: Geração de leads / Vendas / Ligações).
+- **Palavras-chave** organizadas por grupo de anúncios/tema, com a correspondência sugerida
+  (ampla modificada / frase / exata). Incluir lista de **negativas** óbvias.
+- **Títulos** (RSA — até 15, 30 caracteres cada).
+- **Descrições** (até 4, 90 caracteres cada).
+- **Sitelinks** (4-6) e **callouts**.
+
+**Se Meta (só Meta ou ambos):**
+- **Objetivo de campanha** (ex: Leads / Conversões / Mensagens).
+- **Criativos por funil**:
+  - **Topo (consciência/descoberta)** — ângulos pra audiência fria.
+  - **Meio (consideração)** — prova, autoridade, comparação.
+  - **Fundo (conversão/remarketing)** — oferta, urgência, CTA direto.
+  - Pra cada criativo: formato sugerido, ângulo/conceito, copy principal (headline + texto) e CTA.
+
+**Sempre:**
+- **Funil do lead ao comercial**: o caminho completo do lead, da entrada (anúncio/LP/form/DM)
+  até a chegada no comercial. Etapas: captação → qualificação → nutrição/contato → handoff pro
+  comercial. Indicar ferramentas/automação se conhecidas (ex: form, WhatsApp, CRM).
+
+Mostrar esse conteúdo pro usuário em texto **antes** de gerar o PDF (CHECKPOINT 2). Ajustar se
+ele pedir.
+
+### 4. CHECKPOINT 2 — Montar o deck (formato oficial)
+Depois do conteúdo aprovado, montar o **deck de slides 16:9** a partir de
+`SKILL_FILES/template-plano.html` (sistema "Disciplina Ártica"). É uma apresentação, não um
+documento A4.
+
+**Sistema de design (não desviar):**
+- Fundo `#00002c`, cards `#0a0a3d`, **branco `#FFFFFF` é o único destaque**. Sem cor vibrante,
+  sem gradiente colorido (regra do `marca/design-guide.md`).
+- Display Montserrat ExtraBold; corpo Inter; serif (Lora) **só** no selo ARTTICO (é o logo).
+- Assinatura: a **linha de horizonte** com o traço `.run` que avança a cada slide (= progresso).
+- Numerais contornados gigantes (`.bignum`) só nos slides divisores.
+
+**Regra crítica de plataforma:** o deck só contém a(s) plataforma(s) escolhida(s).
+- Só Meta → remover o bloco `<!-- BLOCO_GOOGLE_INICIO -->...<!-- BLOCO_GOOGLE_FIM -->`.
+- Só Google → remover o bloco `<!-- BLOCO_META_INICIO -->...<!-- BLOCO_META_FIM -->`.
+- Ambos → manter os dois e ajustar os números de Seção (Google = 03, Meta = 04).
+
+**Montagem:**
+- Slides repetíveis: duplicar o slide de criativo (um por etapa: Reconhecimento, Relacionamento,
+  Remarketing) e as linhas `<tr>` da tabela de palavras-chave.
+- Tokens a substituir: `{{CLIENTE}}`, `{{CLIENTE_CURTO}}`, `{{PLATAFORMA}}`, `{{DATA}}`,
+  `{{RESULTADOS_CURTO}}`/`{{RESULTADOS_MEDIO}}` (itens `<li>`), `{{ACESSOS}}` (`<li>`),
+  `{{ESTRATEGIA}}` (parágrafos `.para` + `.duo` de `.kcard`),
+  `{{AVATAR_FICHA}}` (linhas `.pf` da persona), `{{AVATAR_DORES}}`/`{{AVATAR_DESEJOS}}` (itens
+  `<li>` de `ul.list`, curtos pra caber em 1 linha), `{{FRASE_FINAL}}`, `{{FUNIL_FLOW}}` (caixas
+  `.fbox` em `.frow`).
+  - Google: `{{GOOGLE_OBJETIVO}}`, `{{GOOGLE_KEYWORDS_ROWS}}` (`<tr>`), `{{GOOGLE_TITULOS}}`,
+    `{{GOOGLE_DESCRICOES}}` (`<li>`), `{{GOOGLE_SITELINKS}}`.
+  - Meta: `{{META_VERBA_VALOR}}`, `{{META_VERBA_NOTE}}`, `{{META_FUNIL_LEGEND}}` (`.leg`),
+    `{{ETAPA_NOME}}`/`{{ETAPA_TAG}}`/`{{ETAPA_CRIATIVOS}}` (`.creative`) por slide de criativo.
+- **Passo final obrigatório — numeração e progresso:** contar o total de slides `N` (após
+  remover/duplicar) e, em cada slide, preencher `.pageno` com `P / N` e `.run` com
+  `style="width:<P/N×100>%"`. O traço tem que crescer do primeiro ao último slide.
+- **Sem travessões (—)** em nenhum texto.
+
+### 5. Renderizar e salvar (deck do plano)
+- Salvar o HTML em `clientes/[cliente]/plano-acao/[YYYY-MM-DD]_plano-acao.html`
+  (criar a pasta `plano-acao/` se não existir).
+- Renderizar o PDF com Playwright usando o script `SKILL_FILES/render-pdf.js`:
+  ```
+  node ".claude/skills/plano-acao/SKILL_FILES/render-pdf.js" "<caminho-absoluto-do-html>" "<caminho-absoluto-do-pdf>"
+  ```
+- Se Playwright não estiver instalado: `npx playwright install chromium`.
+- PDF final: `clientes/[cliente]/plano-acao/[YYYY-MM-DD]_plano-acao.pdf`.
+
+### 6. Exportar para o Canva (após o PDF)
+Depois de gerar o PDF, **sempre** subir esse mesmo PDF para o Canva via importação, gerando um
+design editável com a mesma cara dos slides.
+
+- **Pré-requisito:** o MCP do Canva precisa estar conectado a este ambiente (Claude Code). Checar
+  se há uma ferramenta do Canva disponível (ex: `mcp__*canva*`). Se **não** houver, avisar o
+  usuário que o MCP do Canva não está conectado aqui e pular esta etapa (não falhar o fluxo) —
+  o PDF já está salvo. Comando pra conectar: `claude mcp add canva --transport http https://mcp.canva.com/mcp`.
+- **Mecanismo:** importação de design (Canva Connect API — *design import*). Enviar o
+  `[YYYY-MM-DD]_plano-acao.pdf` e aguardar o job de importação concluir. O Canva converte cada
+  página do PDF em uma página do design.
+- **Após importar:** informar ao usuário o link de edição/visualização do design no Canva.
+- Observação: a importação preserva o visual; o texto fica pouco editável (cada slide entra
+  rasterizado/achatado). Para edição nativa total seria necessário Brand Template + autofill —
+  fora do escopo padrão.
+
+### 7. Confirmar
+Informar o caminho do PDF gerado e o link do design no Canva (se exportado). Perguntar se quer
+ajustar algum bloco ou já está pronto pra enviar ao cliente.
+
+Como o avatar já está montado, **oferecer o próximo passo**: gerar o direcionamento de criativos
+(roteiros de peça por funil) com a skill `direcionamento-criativos`. Não montar os criativos
+aqui — essa skill é independente.
+
+---
+
+## Observações
+- Calibrar keywords, títulos, descrições e criativos pelo nicho real do cliente e pela região
+  (`Opera em`). Pra clientes da América Latina, adaptar pro espanhol mantendo especificidade.
+- Respeitar limites de caracteres do Google (títulos 30 / descrições 90).
+- Nada de travessão em copy. CTA e linguagem orientada a conversão.

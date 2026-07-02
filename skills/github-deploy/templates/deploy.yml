@@ -1,0 +1,46 @@
+name: Build e Deploy (FTP)
+
+# Dispara a cada push na main e tambem permite rodar manualmente pelo GitHub.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.host_servidor }}
+          username: ${{ secrets.usuario_ftp }}
+          password: ${{ secrets.senha_ftp }}
+          # Pasta de saida do build (ajustar se nao for dist):
+          local-dir: ./dist/
+          # IMPORTANTE: pasta de destino no servidor FTP.
+          #   - FTP entra na raiz do site -> ./<subpasta-da-pagina>/
+          #   - FTP entra direto na pasta  -> ./
+          # A action APAGA arquivos do servidor que nao estao no build. Confirmar antes.
+          server-dir: ./SUBPASTA_DA_PAGINA/
+          # Preserva arquivos do servidor que nao vem do build:
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.htaccess
+            **/node_modules/**

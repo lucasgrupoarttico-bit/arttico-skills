@@ -1,0 +1,99 @@
+name: Build e Deploy (FTP)
+
+on:
+  push:
+    branches: [main]
+
+# Monorepo: cada pagina fica na sua subpasta e so e deployada quando os arquivos
+# da SUA pasta mudam (dorny/paths-filter). Para adicionar uma pagina nova:
+#   1. criar a subpasta com o projeto (ex.: hernia/)
+#   2. adicionar um filtro em "changes" (hernia: - 'hernia/**')
+#   3. duplicar o job deploy-<pagina> trocando os caminhos.
+#
+# server-dir: se a conta FTP abre DENTRO do public_html, usar caminho relativo
+# simples (ex.: ./pasta/). Se abre acima, prefixar /public_html/. NUNCA prefixar
+# /public_html/ quando a conta ja abre dentro dele (vira public_html/public_html).
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      pagina1: ${{ steps.filter.outputs.pagina1 }}
+      # pagina2: ${{ steps.filter.outputs.pagina2 }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            pagina1:
+              - 'PAGINA1/**'
+            # pagina2:
+            #   - 'PAGINA2/**'
+
+  deploy-pagina1:
+    needs: changes
+    if: needs.changes.outputs.pagina1 == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: PAGINA1/package-lock.json
+
+      - name: Instalar dependencias (PAGINA1)
+        run: npm ci
+        working-directory: ./PAGINA1
+
+      - name: Build (PAGINA1)
+        run: npm run build
+        working-directory: ./PAGINA1
+
+      - name: Deploy PAGINA1 via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.host_servidor }}
+          username: ${{ secrets.usuario_ftp }}
+          password: ${{ secrets.senha_ftp }}
+          port: 21
+          protocol: ftp
+          local-dir: ./PAGINA1/dist/
+          server-dir: ./SUBPASTA_NO_SERVIDOR/
+          timeout: 120000
+          dangerous-clean-slate: false
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.htaccess
+            **/node_modules/**
+
+  # ----- Modelo para uma segunda pagina (descomentar e ajustar) -----
+  # deploy-pagina2:
+  #   needs: changes
+  #   if: needs.changes.outputs.pagina2 == 'true'
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 20
+  #         cache: npm
+  #         cache-dependency-path: PAGINA2/package-lock.json
+  #     - run: npm ci
+  #       working-directory: ./PAGINA2
+  #     - run: npm run build
+  #       working-directory: ./PAGINA2
+  #     - uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+  #       with:
+  #         server: ${{ secrets.host_servidor }}
+  #         username: ${{ secrets.usuario_ftp }}
+  #         password: ${{ secrets.senha_ftp }}
+  #         port: 21
+  #         protocol: ftp
+  #         local-dir: ./PAGINA2/dist/
+  #         server-dir: ./SUBPASTA2_NO_SERVIDOR/
+  #         timeout: 120000
+  #         dangerous-clean-slate: false

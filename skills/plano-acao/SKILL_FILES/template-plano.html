@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<!--
+  TEMPLATE OFICIAL — Plano de Ação (deck 16:9, sistema "Disciplina Ártica" do Grupo Arttico)
+  ============================================================================================
+  COMO USAR (o Claude monta o deck a partir deste boilerplate):
+  1. Substituir os tokens {{...}} pelo conteúdo do cliente.
+  2. Plataforma:
+       - Só Meta  -> remover o bloco entre <!-- BLOCO_GOOGLE_INICIO --> e <!-- BLOCO_GOOGLE_FIM -->
+       - Só Google-> remover o bloco entre <!-- BLOCO_META_INICIO --> e <!-- BLOCO_META_FIM -->
+       - Ambos    -> manter os dois (ajustar números de Seção: Google 03, Meta 04...)
+  3. Slides repetíveis: duplicar o slide de criativo (um por etapa) e as linhas da tabela de
+     palavras-chave conforme necessário.
+  4. PASSO FINAL OBRIGATÓRIO — numeração e progresso:
+       - Contar o total de slides (N) depois de remover/duplicar.
+       - Em cada slide, preencher .pageno com "P / N" e .run com style="width:<P/N*100>%".
+       - O traço de progresso (.run) é a assinatura: deve crescer do 1º ao último slide.
+  5. Sem travessões (—) em nenhum texto. Branco é o único destaque. Sem cor vibrante.
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=Lora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  @page { size: 1280px 720px; margin: 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #00002c; }
+  body { font-family: 'Inter', sans-serif; color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  :root {
+    --night: #00002c; --card: #0a0a3d; --frost: #fff;
+    --glacier: rgba(255,255,255,0.92); --mist: rgba(255,255,255,0.52);
+    --faint: rgba(255,255,255,0.34); --hair: rgba(255,255,255,0.12); --hair2: rgba(255,255,255,0.06);
+  }
+
+  .slide {
+    width: 1280px; height: 720px; position: relative; overflow: hidden;
+    background:
+      radial-gradient(58% 48% at 16% 8%, rgba(255,255,255,0.05), transparent 62%),
+      radial-gradient(50% 60% at 92% 100%, rgba(255,255,255,0.025), transparent 60%),
+      #00002c;
+    page-break-after: always; break-after: page;
+  }
+  .slide:last-child { page-break-after: auto; break-after: auto; }
+
+  .eyebrow { position: absolute; top: 56px; left: 72px; font-size: 13px; letter-spacing: 0.24em;
+    text-transform: uppercase; color: var(--mist); font-weight: 600; z-index: 3; }
+  .horizon { position: absolute; left: 0; right: 0; bottom: 86px; height: 1px; background: var(--hair); z-index: 2; }
+  .horizon .run { position: absolute; left: 0; top: 0; height: 1px; background: var(--frost);
+    transform-origin: left center; animation: draw 1.1s cubic-bezier(.2,.7,.2,1) both; }
+  .horizon .run::after { content: ""; position: absolute; right: -2px; top: -2px; width: 5px; height: 5px;
+    border-radius: 50%; background: var(--frost); }
+  .foot { position: absolute; left: 72px; right: 72px; bottom: 44px; display: flex;
+    justify-content: space-between; align-items: center; z-index: 3; }
+  .mark { font-family: 'Lora', serif; font-weight: 600; font-size: 18px; letter-spacing: 3px; color: var(--glacier); }
+  .pageno { font-size: 13px; letter-spacing: 0.18em; color: var(--faint); font-variant-numeric: tabular-nums; }
+
+  .wrap { position: absolute; left: 72px; right: 72px; top: 104px; bottom: 116px; z-index: 2; }
+  .wrap > * { animation: rise .7s cubic-bezier(.2,.7,.2,1) both; }
+  .wrap > *:nth-child(2) { animation-delay: .06s; }
+  .wrap > *:nth-child(3) { animation-delay: .12s; }
+  .wrap > *:nth-child(4) { animation-delay: .18s; }
+  .wrap > *:nth-child(5) { animation-delay: .24s; }
+
+  .headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 50px; letter-spacing: -0.02em;
+    line-height: 1.05; color: var(--frost); }
+  .headline .dim { color: var(--mist); }
+  .uline { width: 60px; height: 2px; background: var(--frost); margin: 18px 0 30px; }
+
+  .slide.divider .wrap { display: flex; flex-direction: column; justify-content: center; }
+  .slide.divider .sec { font-size: 14px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--mist);
+    font-weight: 600; margin-bottom: 18px; }
+  .slide.divider .headline { font-size: 92px; }
+  .bignum { position: absolute; right: 60px; bottom: 70px; font-family: 'Montserrat', sans-serif; font-weight: 800;
+    font-size: 320px; line-height: 0.78; letter-spacing: -0.04em; color: transparent;
+    -webkit-text-stroke: 1.5px rgba(255,255,255,0.09); z-index: 1; }
+
+  .slide.cover .wrap { display: flex; flex-direction: column; justify-content: center; }
+  .slide.cover .headline { font-size: 104px; line-height: 0.98; }
+  .cover-sub { margin-top: 30px; font-size: 28px; font-weight: 500; color: var(--glacier); }
+  .cover-meta { margin-top: 10px; font-size: 18px; letter-spacing: 0.04em; color: var(--mist); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 64px; }
+  .col-h { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 21px; color: var(--frost); margin-bottom: 14px;
+    padding-bottom: 12px; border-bottom: 1px solid var(--hair); }
+  ul.list { list-style: none; }
+  ul.list li { position: relative; padding: 7px 0 7px 26px; font-size: 20px; line-height: 1.32; color: var(--glacier); }
+  ul.list li::before { content: ""; position: absolute; left: 2px; top: 16px; width: 7px; height: 7px; background: var(--frost); }
+
+  ul.access { list-style: none; }
+  ul.access li { position: relative; padding: 11px 0 11px 28px; font-size: 21px; color: var(--glacier);
+    border-bottom: 1px solid var(--hair2); }
+  ul.access li:last-child { border-bottom: none; }
+  ul.access li::before { content: ""; position: absolute; left: 2px; top: 19px; width: 8px; height: 1px; background: var(--frost); }
+  ul.access b { color: var(--frost); font-weight: 600; }
+
+  /* PERSONA (boneco line-art + ficha) — slide de Avatar */
+  .avatar-row { display: flex; gap: 40px; align-items: flex-start; }
+  .persona { background: var(--card); border-radius: 12px; padding: 18px 24px; width: 330px; flex: none;
+    display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .persona-art { width: 92px; height: 100px; }
+  .persona-art svg { width: 100%; height: 100%; display: block; }
+  .persona-ficha { width: 100%; display: flex; flex-direction: column; gap: 9px; }
+  .pf { display: flex; flex-direction: column; gap: 3px; border-bottom: 1px solid var(--hair2); padding-bottom: 8px; }
+  .pf:last-child { border-bottom: none; padding-bottom: 0; }
+  .pk { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mist); }
+  .pv { font-size: 16px; line-height: 1.3; color: var(--frost); }
+  .avatar-main { flex: 1; }
+  .avatar-main ul.list li { font-size: 18px; padding: 6px 0 6px 24px; }
+  .avatar-main ul.list li::before { top: 14px; }
+
+  .para { font-size: 20px; line-height: 1.55; color: var(--glacier); margin-bottom: 18px; }
+  .para strong { color: var(--frost); font-weight: 600; }
+  .duo { display: flex; gap: 18px; margin-bottom: 18px; }
+  .kcard { flex: 1; background: var(--card); border-radius: 12px; padding: 22px 24px; }
+  .kcard .lbl { font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mist); margin-bottom: 8px; }
+  .kcard .val { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 23px; color: var(--frost); }
+  .kcard .sub { font-size: 15px; color: var(--mist); margin-top: 8px; line-height: 1.4; }
+
+  /* Tabela (palavras-chave / volume de buscas — Google) */
+  .ktable { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  .ktable th { text-align: left; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mist);
+    font-weight: 600; padding: 12px 14px; border-bottom: 1px solid var(--hair); }
+  .ktable td { padding: 12px 14px; font-size: 18px; color: var(--glacier); border-bottom: 1px solid var(--hair2); }
+  .ktable tr:last-child td { border-bottom: none; }
+  .ktable .num { text-align: right; font-variant-numeric: tabular-nums; color: var(--frost); }
+
+  .verba { display: flex; flex-direction: column; justify-content: center; height: 100%; }
+  .verba .lbl { font-size: 14px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--mist); margin-bottom: 18px; }
+  .verba .val { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 104px; letter-spacing: -0.03em;
+    line-height: 1; color: var(--frost); }
+  .verba .val span { font-size: 36px; color: var(--mist); font-weight: 700; }
+  .verba .pills { display: flex; gap: 14px; margin-top: 36px; }
+  .pill { padding: 14px 34px; border: 1px solid rgba(255,255,255,0.3); border-radius: 100px; font-weight: 600;
+    font-size: 21px; color: var(--frost); }
+  .verba .note { margin-top: 26px; font-size: 17px; color: var(--mist); }
+
+  .funnel-slide { display: flex; align-items: center; gap: 72px; height: 100%; }
+  .funnel { width: 520px; display: flex; flex-direction: column; clip-path: polygon(0 0, 100% 0, 70% 100%, 30% 100%); }
+  .fband { display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif;
+    font-weight: 700; font-size: 21px; color: var(--frost); }
+  .fband.f1 { height: 140px; background: rgba(255,255,255,0.17); }
+  .fband.f2 { height: 140px; background: rgba(255,255,255,0.105); }
+  .fband.f3 { height: 140px; background: rgba(255,255,255,0.05); color: var(--glacier); }
+  .legend { display: flex; flex-direction: column; gap: 24px; }
+  .leg { font-size: 23px; color: var(--glacier); padding-left: 18px; border-left: 1px solid var(--hair); }
+  .leg b { color: var(--frost); font-weight: 600; }
+  .leg.end { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 26px; color: var(--frost); border-left-color: var(--frost); }
+
+  .meta-tag { font-size: 14px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--mist); margin-bottom: 22px; }
+  .crow { display: flex; gap: 18px; }
+  .creative { flex: 1; background: var(--card); border-radius: 12px; padding: 22px 24px; }
+  .creative .fmt { font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--mist); margin-bottom: 12px;
+    padding-bottom: 12px; border-bottom: 1px solid var(--hair); }
+  .creative .ang { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 19px; line-height: 1.35; color: var(--frost); margin-bottom: 12px; }
+  .creative .copy { font-size: 16px; line-height: 1.45; color: var(--mist); margin-bottom: 14px; }
+  .creative .cta { font-size: 14px; letter-spacing: 0.04em; color: var(--frost); border-top: 1px solid var(--hair); padding-top: 12px; }
+
+  .flow { display: flex; flex-direction: column; align-items: center; margin-top: 52px; }
+  .frow { display: flex; align-items: stretch; gap: 16px; }
+  .fbox { background: var(--card); border-radius: 12px; padding: 18px 26px; min-width: 232px; text-align: center; }
+  .fbox .ft { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 20px; color: var(--frost); }
+  .fbox .fd { font-size: 14px; color: var(--mist); margin-top: 4px; }
+  .arrow { display: flex; align-items: center; font-size: 22px; color: var(--faint); }
+  .varrow { font-size: 22px; color: var(--faint); margin: 8px 0; }
+
+  .slide.end .wrap { display: flex; flex-direction: column; justify-content: center; }
+  .end-mark { font-family: 'Lora', serif; font-weight: 700; font-size: 110px; letter-spacing: 7px; color: var(--frost); line-height: 1; }
+  .end-line { font-size: 19px; color: var(--mist); margin-top: 26px; letter-spacing: 0.02em; }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+  @keyframes draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @media print { *, *::before, *::after { animation: none !important; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; } }
+</style>
+</head>
+<body>
+
+<!-- CAPA -->
+<div class="slide cover">
+  <div class="eyebrow">Grupo Arttico</div>
+  <div class="wrap">
+    <div class="headline">Plano <span class="dim">de</span> Ação</div>
+    <div class="cover-sub">{{CLIENTE}}</div>
+    <div class="cover-meta">{{PLATAFORMA}} · {{DATA}}</div>
+  </div>
+  <div class="horizon"><div class="run" style="width:{{W}}"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>
+</div>
+
+<!-- RESULTADOS ESPERADOS -->
+<div class="slide">
+  <div class="eyebrow">Plano de Ação · {{CLIENTE_CURTO}}</div>
+  <div class="wrap">
+    <div class="headline">Resultados <span class="dim">esperados</span></div>
+    <div class="uline"></div>
+    <div class="grid2">
+      <div>
+        <div class="col-h">Curto prazo · 30 dias</div>
+        <ul class="list">{{RESULTADOS_CURTO}}</ul>
+      </div>
+      <div>
+        <div class="col-h">Médio prazo · 90 dias</div>
+        <ul class="list">{{RESULTADOS_MEDIO}}</ul>
+      </div>
+    </div>
+  </div>
+  <div class="horizon"><div class="run" style="width:{{W}}"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>
+</div>
+
+<!-- DIVIDER: ACESSOS -->
+<div class="slide divider">
+  <div class="eyebrow">Plano de Ação · {{CLIENTE_CURTO}}</div>
+  <div class="bignum">01</div>
+  <div class="wrap"><div class="sec">Seção 01</div><div class="headline">Acessos</div></div>
+  <div class="horizon"><div class="run" style="width:{{W}}"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>
+</div>
+
+<!-- ACESSOS -->
+<div class="slide">
+  <div class="eyebrow">Plano de Ação · {{CLIENTE_CURTO}}</div>
+  <div class="wrap">
+    <div class="headline">Acessos <span class="dim">necessários</span></div>
+    <div class="uline"></div>
+    <ul class="access">{{ACESSOS}}</ul>
+  </div>
+  <div class="horizon"><div class="run" style="width:{{W}}"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>
+</div>
+
+<!-- DIVIDER: ESTRATÉGIA -->
+<div class="slide divider">
+  <div class="eyebrow">Plano de Ação · {{CLIENTE_CURTO}}</div>
+  <div class="bignum">02</div>
+  <div class="wrap"><div class="sec">Seção 02</div><div class="headline">Estratégia</div></div>
+  <div class="horizon"><div class="run" style="width:{{W}}"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>
+</div>
+
+<!-- ESTRATÉGIA (preencher {{ESTRATEGIA}} com .para + .duo de .kcard, ver exemplo no SKILL.md) -->
+<div class="slide">
+  <div class="eyebrow">Plano de Ação · {{CLIENTE_CURTO}}</div>
+  <div class="wrap">
+    <div class="headline">Estratégia <span class="dim">e plataforma</span></div>
+    <div class="uline"></div>
+    {{ESTRATEGIA}}
+  </div>
+  <div class="horizon"><div class="run" style="width:{{W}}"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>
+</div>
+
+<!-- AVATAR (sempre) — público-alvo: dores e desejos. Base pro direcionamento de criativos. -->
+<div class="slide">
+  <div class="eyebrow">Plano de Ação · {{CLIENTE_CURTO}}</div>
+  <div class="wrap">
+    <div class="headline">Avatar <span class="dim">· o público</span></div>
+    <div class="uline"></div>
+    <div class="avatar-row">
+      <div class="persona">
+        <div class="persona-art">
+          <svg viewBox="0 0 140 150" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="70" cy="46" r="30"/>
+            <path d="M70 76 L70 92"/>
+            <path d="M18 148 C18 110, 43 92, 70 92 C97 92, 122 110, 122 148"/>
+          </svg>
+        </div>
+        <div class="persona-ficha">{{AVATAR_FICHA}}</div>
+      </div>
+      <div class="avatar-main">
+        <div class="grid2">
+          <div><div class="col-h">Dores</div><ul class="list">{{AVATAR_DORES}}</ul></div>
+          <div><div class="col-h">Desejos</div><ul class="list">{{AVATAR_DESEJOS}}</ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="horizon"><div class="run" style="width:{{W}}"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>
+</div>
+
+<!-- BLOCO_GOOGLE_INICIO  (remover inteiro se a plataforma não incluir Google) -->
+<div class="slide divider">
+  <div class="eyebrow">Plano de Ação · {{CLIENTE_CURTO}}</div>
+  <div class="bignum">03</div>
+  <div class="wrap"><div class="sec">Seção 03</div><div class="headline">Google Ads</div></div>
+  <div class="horizon"><div class="run" style="width:{{W}}"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>
+</div>
+
+<div class="slide">
+  <div class="eyebrow">Plano de Ação · {{CLIENTE_CURTO}}</div>
+  <div class="wrap">
+    <div class="headline">Objetivo <span class="dim">e palavras-chave</span></div>
+    <div class="uline"></div>
+    <div class="kcard" style="margin-bottom:22px;">
+      <div class="lbl">Objetivo de campanha</div>
+      <div class="val">{{GOOGLE_OBJETIVO}}</div>
+    </div>
+    <table class="ktable">
+      <thead><tr><th>Palavra-chave</th><th>Correspondência</th><th class="num">Vol. mensal</th><th class="num">Concorrência</th></tr></thead>
+      <tbody>{{GOOGLE_KEYWORDS_ROWS}}</tbody>
+    </table>
+  </div>
+  <div class="horizon"><div class="run" style="width:{{W}}"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>
+</div>
+
+<div class="slide">
+  <div class="eyebrow">Plano de Ação · {{CLIENTE_CURTO}}</div>
+  <div class="wrap">
+    <div class="headline">Anúncios <span class="dim">de busca</span></div>
+    <div class="uline"></div>
+    <div class="grid2">
+      <div><div class="col-h">Títulos</div><ul class="list">{{GOOGLE_TITULOS}}</ul></div>
+      <div><div class="col-h">Descrições</div><ul class="list">{{GOOGLE_DESCRICOES}}</ul></div>
+    </div>
+  </div>
+  <div class="horizon"><div class="run" style="width:{{W}}"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>
+</div>
+
+<div class="slide">
+  <div class="eyebrow">Plano de Ação · {{CLIENTE_CURTO}}</div>
+  <div class="wrap">
+    <div class="headline">Sitelinks <span class="dim">e callouts</span></div>
+    <div class="uline"></div>
+    {{GOOGLE_SITELINKS}}
+  </div>
+  <div class="horizon"><div class="run" style="width:{{W}}"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>
+</div>
+<!-- BLOCO_GOOGLE_FIM -->
+
+<!-- BLOCO_META_INICIO  (remover inteiro se a plataforma não incluir Meta) -->
+<div class="slide divider">
+  <div class="eyebrow">Plano de Ação · {{CLIENTE_CURTO}}</div>
+  <div class="bignum">04</div>
+  <div class="wrap"><div class="sec">Seção 04</div><div class="headline">Meta Ads</div></div>
+  <div class="horizon"><div class="run" style="width:{{W}}"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>
+</div>
+
+<div class="slide">
+  <div class="eyebrow">Plano de Ação · {{CLIENTE_CURTO}}</div>
+  <div class="wrap">
+    <div class="verba">
+      <div class="lbl">Distribuição de verba</div>
+      <div class="val">{{META_VERBA_VALOR}}<span> /mês</span></div>
+      <div class="pills">
+        <span class="pill">Reconhecimento</span>
+        <span class="pill">Relacionamento</span>
+        <span class="pill">Remarketing</span>
+      </div>
+      <div class="note">{{META_VERBA_NOTE}}</div>
+    </div>
+  </div>
+  <div class="horizon"><div class="run" style="width:{{W}}"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>
+</div>
+
+<div class="slide">
+  <div class="eyebrow">Plano de Ação · {{CLIENTE_CURTO}}</div>
+  <div class="wrap">
+    <div class="funnel-slide">
+      <div class="funnel">
+        <div class="fband f1">Reconhecimento</div>
+        <div class="fband f2">Relacionamento</div>
+        <div class="fband f3">Remarketing</div>
+      </div>
+      <div class="legend">{{META_FUNIL_LEGEND}}</div>
+    </div>
+  </div>
+  <div class="horizon"><div class="run" style="width:{{W}}"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>
+</div>
+
+<!-- Slide de criativo (DUPLICAR um por etapa: Reconhecimento / Relacionamento / Remarketing) -->
+<div class="slide">
+  <div class="eyebrow">Plano de Ação · {{CLIENTE_CURTO}}</div>
+  <div class="wrap">
+    <div class="headline">{{ETAPA_NOME}}</div>
+    <div class="uline"></div>
+    <div class="meta-tag">{{ETAPA_TAG}}</div>
+    <div class="crow">{{ETAPA_CRIATIVOS}}</div>
+  </div>
+  <div class="horizon"><div class="run" style="width:{{W}}"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>
+</div>
+<!-- BLOCO_META_FIM -->
+
+<!-- FUNIL DE CONVERSÃO (sempre) -->
+<div class="slide">
+  <div class="eyebrow">Plano de Ação · {{CLIENTE_CURTO}}</div>
+  <div class="wrap">
+    <div class="headline">Funil <span class="dim">de conversão</span></div>
+    <div class="uline"></div>
+    <div class="flow">{{FUNIL_FLOW}}</div>
+  </div>
+  <div class="horizon"><div class="run" style="width:{{W}}"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>
+</div>
+
+<!-- FECHAMENTO -->
+<div class="slide end">
+  <div class="wrap">
+    <div class="eyebrow" style="position:static;left:auto;top:auto;margin-bottom:24px;">Grupo Arttico</div>
+    <div class="end-mark">ARTTICO</div>
+    <div class="end-line">{{FRASE_FINAL}}</div>
+  </div>
+  <div class="horizon"><div class="run" style="width:100%"></div></div>
+  <div class="foot"><span class="mark"></span><span class="pageno">{{N}} / {{N}}</span></div>
+</div>
+
+</body>
+</html>

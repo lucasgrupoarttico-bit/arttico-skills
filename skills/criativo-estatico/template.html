@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&family=Inter:wght@400;500&display=swap');
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    width: 1080px;
+    height: 1920px;
+    background-color: #00002c;
+    font-family: 'Inter', sans-serif;
+    color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 100px 80px 120px;
+    overflow: hidden;
+  }
+
+  /* LOGO */
+  .logo-area {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .logo-area img {
+    width: 160px;
+    opacity: 0.95;
+  }
+
+  /* CONTEÚDO CENTRAL */
+  .content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    gap: 40px;
+    padding: 80px 0;
+  }
+
+  .label {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 28px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .headline {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 96px;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: #FFFFFF;
+    max-width: 900px;
+  }
+
+  .subtitle {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 38px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.7);
+    max-width: 820px;
+  }
+
+  /* LINHA DIVISÓRIA */
+  .divider {
+    width: 80px;
+    height: 3px;
+    background-color: #FFFFFF;
+    opacity: 0.25;
+    border-radius: 2px;
+  }
+
+  /* CTA */
+  .cta-area {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .cta-button {
+    display: inline-block;
+    background-color: #FFFFFF;
+    color: #00002c;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 30px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 26px 56px;
+    border-radius: 8px;
+  }
+</style>
+</head>
+<body>
+
+  <!-- LOGO -->
+  <div class="logo-area">
+    <img src="{{LOGO_PATH}}" alt="Logo">
+  </div>
+
+  <!-- CONTEÚDO CENTRAL -->
+  <div class="content">
+    <span class="label">{{LABEL}}</span>
+    <h1 class="headline">{{HEADLINE}}</h1>
+    <div class="divider"></div>
+    <p class="subtitle">{{SUBTITLE}}</p>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-area">
+    <span class="cta-button">{{CTA}}</span>
+  </div>
+
+</body>
+</html>

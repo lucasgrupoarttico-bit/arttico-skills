@@ -1,0 +1,17 @@
+{
+  "nome": "Cliente Exemplo",
+  "dominio": "igorflor.com",
+  "stape_url": "https://stape.igorflor.com",
+  "clarity_id": "SEU_CLARITY_ID",
+  "whatsapp": "5584991059889",
+  "ga4_id": "G-XXXXXXXXXX",
+  "fb_pixel_id": "1234567890",
+  "fb_token": "EAAXXXXXXXXXXXXXXX",
+  "paginas": [
+    {
+      "slug": "lp",
+      "path_filter": "lp",
+      "conversoes": ["click_whatsapp", "form_submission"]
+    }
+  ]
+}

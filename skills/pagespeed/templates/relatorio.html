@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatório de Performance — {{CLIENTE}}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ================================================================
+       PAGESPEED RATOS — Relatório de Performance
+       Design Guide: Grupo Arttico
+       #00002c fundo | #0a0a3d cards | #FFFFFF texto
+       Montserrat ExtraBold títulos | Inter corpo
+    ================================================================ */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:         #00002c;
+      --bg-card:    #0a0a3d;
+      --bg-card-2:  #0f0f4d;
+      --text:       #ffffff;
+      --text-muted: rgba(255,255,255,0.55);
+      --border:     rgba(255,255,255,0.07);
+      --radius:     12px;
+      --shadow:     0 4px 24px rgba(0,0,0,0.35);
+      --font-title: 'Montserrat', -apple-system, sans-serif;
+      --font-body:  'Inter', -apple-system, sans-serif;
+
+      --green:   #22c55e;
+      --amber:   #f59e0b;
+      --red:     #ef4444;
+      --blue:    #6366f1;
+      --green-bg:  rgba(34,197,94,0.1);
+      --amber-bg:  rgba(245,158,11,0.1);
+      --red-bg:    rgba(239,68,68,0.1);
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 4rem;
+    }
+
+    /* === HEADER === */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 3rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      gap: 1rem;
+    }
+
+    .header-left h1 {
+      font-family: var(--font-title);
+      font-weight: 800;
+      font-size: 2rem;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .header-left .subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 0.4rem;
+    }
+
+    .header-right {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .header-right .badge {
+      display: inline-block;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.3rem 0.8rem;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .logo-arttico {
+      font-family: var(--font-title);
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-top: 0.6rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* === SECTION TITLE === */
+    .section-title {
+      font-family: var(--font-title);
+      font-weight: 800;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      margin-top: 2.5rem;
+    }
+
+    /* === SCORE GRID === */
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      .score-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .score-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+
+    .score-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .score-number {
+      font-family: var(--font-title);
+      font-weight: 800;
+      font-size: 2.5rem;
+      line-height: 1;
+    }
+
+    .score-status {
+      font-size: 0.75rem;
+      margin-top: 0.4rem;
+      font-weight: 600;
+    }
+
+    .score-bom    { color: var(--green); }
+    .score-medio  { color: var(--amber); }
+    .score-ruim   { color: var(--red);   }
+    .score-bom-bg { background: var(--green-bg); }
+    .score-medio-bg { background: var(--amber-bg); }
+    .score-ruim-bg  { background: var(--red-bg);   }
+
+    /* === CWV GRID === */
+    .cwv-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      .cwv-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .cwv-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .cwv-name {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .cwv-value {
+      font-family: var(--font-title);
+      font-weight: 800;
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+
+    .cwv-status {
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-top: 0.3rem;
+    }
+
+    .cwv-bom   { color: var(--green); }
+    .cwv-medio { color: var(--amber); }
+    .cwv-ruim  { color: var(--red);   }
+
+    /* === PLANO DE AÇÃO === */
+    .plano-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .plano-item {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .plano-num {
+      font-family: var(--font-title);
+      font-weight: 800;
+      font-size: 1.1rem;
+      width: 1.8rem;
+      text-align: center;
+      color: var(--text-muted);
+      padding-top: 0.1rem;
+    }
+
+    .plano-content {}
+
+    .plano-titulo {
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .plano-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .plano-impacto {
+      font-size: 0.75rem;
+      font-weight: 700;
+      font-family: var(--font-title);
+      white-space: nowrap;
+      padding-top: 0.15rem;
+    }
+
+    .tag {
+      display: inline-block;
+      border-radius: 4px;
+      padding: 0.15rem 0.5rem;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.4rem;
+    }
+
+    .tag-critico { background: var(--red-bg);   color: var(--red);   }
+    .tag-importante { background: var(--amber-bg); color: var(--amber); }
+    .tag-opcional   { background: rgba(99,102,241,0.12); color: var(--blue); }
+
+    /* === CLARITY METRICS === */
+    .clarity-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      .clarity-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .clarity-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      box-shadow: var(--shadow);
+    }
+
+    .clarity-metric-name {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    .clarity-metric-value {
+      font-family: var(--font-title);
+      font-weight: 800;
+      font-size: 1.7rem;
+      line-height: 1;
+    }
+
+    .clarity-metric-status {
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-top: 0.3rem;
+      color: var(--text-muted);
+    }
+
+    /* === INSIGHTS CLARITY === */
+    .insights-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .insight-card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      box-shadow: var(--shadow);
+      border-left: 3px solid transparent;
+    }
+
+    .insight-card.urgente   { border-left-color: var(--red);   }
+    .insight-card.atencao   { border-left-color: var(--amber); }
+    .insight-card.sugestao  { border-left-color: var(--blue);  }
+
+    .insight-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .insight-titulo {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .insight-dado {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .insight-acao {
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+
+    /* === DIVIDER === */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 2.5rem 0;
+    }
+
+    /* === FOOTER === */
+    .footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .footer strong {
+      font-family: var(--font-title);
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    /* === ESTRATÉGIA TABS === */
+    .estrategia-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .tab {
+      background: var(--bg-card);
+      border-radius: 8px;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .tab.ativo {
+      background: rgba(255,255,255,0.1);
+      color: var(--text);
+    }
+
+    /* === HIGHLIGHT BOX === */
+    .highlight-box {
+      background: var(--bg-card-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .highlight-box p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .highlight-box strong {
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-left">
+      <h1>{{CLIENTE}}</h1>
+      <p class="subtitle">
+        Relatório de Performance Web &mdash; {{PERIODO}}
+      </p>
+      <p class="subtitle" style="margin-top:0.2rem">
+        <a href="{{SITE_URL}}" style="color:rgba(255,255,255,0.4);text-decoration:none;font-size:0.82rem">{{SITE_URL}}</a>
+      </p>
+    </div>
+    <div class="header-right">
+      <div class="badge">Gerado em {{DATA_GERACAO}}</div>
+      <div class="logo-arttico" style="margin-top:0.8rem">Grupo Arttico</div>
+    </div>
+  </header>
+
+  <!-- ===========================
+       PAGESPEED — MOBILE
+  =========================== -->
+  <p class="section-title">PageSpeed Insights &mdash; Mobile</p>
+
+  <div class="score-grid">
+    <div class="score-card {{PS_MOB_PERF_BG}}">
+      <div class="score-label">Performance</div>
+      <div class="score-number {{PS_MOB_PERF_COR}}">{{PS_MOB_PERF}}</div>
+      <div class="score-status {{PS_MOB_PERF_COR}}">{{PS_MOB_PERF_STATUS}}</div>
+    </div>
+    <div class="score-card {{PS_MOB_ACESS_BG}}">
+      <div class="score-label">Acessibilidade</div>
+      <div class="score-number {{PS_MOB_ACESS_COR}}">{{PS_MOB_ACESS}}</div>
+      <div class="score-status {{PS_MOB_ACESS_COR}}">{{PS_MOB_ACESS_STATUS}}</div>
+    </div>
+    <div class="score-card {{PS_MOB_BP_BG}}">
+      <div class="score-label">Boas Práticas</div>
+      <div class="score-number {{PS_MOB_BP_COR}}">{{PS_MOB_BP}}</div>
+      <div class="score-status {{PS_MOB_BP_COR}}">{{PS_MOB_BP_STATUS}}</div>
+    </div>
+    <div class="score-card {{PS_MOB_SEO_BG}}">
+      <div class="score-label">SEO</div>
+      <div class="score-number {{PS_MOB_SEO_COR}}">{{PS_MOB_SEO}}</div>
+      <div class="score-status {{PS_MOB_SEO_COR}}">{{PS_MOB_SEO_STATUS}}</div>
+    </div>
+  </div>
+
+  <!-- CORE WEB VITALS MOBILE -->
+  <p class="section-title" style="margin-top:2rem">Core Web Vitals &mdash; Mobile</p>
+
+  <div class="cwv-grid">
+    <div class="cwv-card">
+      <div class="cwv-name">LCP — Maior elemento</div>
+      <div class="cwv-value {{PS_MOB_LCP_COR}}">{{PS_MOB_LCP}}</div>
+      <div class="cwv-status {{PS_MOB_LCP_COR}}">{{PS_MOB_LCP_STATUS}} &mdash; meta ≤2.5s</div>
+    </div>
+    <div class="cwv-card">
+      <div class="cwv-name">TBT — Bloqueio total</div>
+      <div class="cwv-value {{PS_MOB_TBT_COR}}">{{PS_MOB_TBT}}</div>
+      <div class="cwv-status {{PS_MOB_TBT_COR}}">{{PS_MOB_TBT_STATUS}} &mdash; meta ≤200ms</div>
+    </div>
+    <div class="cwv-card">
+      <div class="cwv-name">CLS — Instabilidade</div>
+      <div class="cwv-value {{PS_MOB_CLS_COR}}">{{PS_MOB_CLS}}</div>
+      <div class="cwv-status {{PS_MOB_CLS_COR}}">{{PS_MOB_CLS_STATUS}} &mdash; meta ≤0.1</div>
+    </div>
+    <div class="cwv-card">
+      <div class="cwv-name">FCP — 1º conteúdo</div>
+      <div class="cwv-value {{PS_MOB_FCP_COR}}">{{PS_MOB_FCP}}</div>
+      <div class="cwv-status {{PS_MOB_FCP_COR}}">{{PS_MOB_FCP_STATUS}} &mdash; meta ≤1.8s</div>
+    </div>
+    <div class="cwv-card">
+      <div class="cwv-name">Speed Index</div>
+      <div class="cwv-value {{PS_MOB_SI_COR}}">{{PS_MOB_SI}}</div>
+      <div class="cwv-status {{PS_MOB_SI_COR}}">{{PS_MOB_SI_STATUS}}</div>
+    </div>
+    <div class="cwv-card">
+      <div class="cwv-name">TTI — Interativo em</div>
+      <div class="cwv-value {{PS_MOB_TTI_COR}}">{{PS_MOB_TTI}}</div>
+      <div class="cwv-status {{PS_MOB_TTI_COR}}">{{PS_MOB_TTI_STATUS}}</div>
+    </div>
+  </div>
+
+  <!-- ===========================
+       PAGESPEED — DESKTOP (opcional)
+  =========================== -->
+  <!-- Se dados desktop disponíveis, substituir {{PS_DESK_DISPONIVEL}} por bloco abaixo.
+       Se não disponível, remover esta seção inteira. -->
+  {{PS_DESK_BLOCO}}
+  <!-- Exemplo de bloco desktop (substituir variáveis):
+  <hr class="divider">
+  <p class="section-title">PageSpeed Insights — Desktop</p>
+  <div class="score-grid">
+    <div class="score-card {{PS_DESK_PERF_BG}}">
+      <div class="score-label">Performance</div>
+      <div class="score-number {{PS_DESK_PERF_COR}}">{{PS_DESK_PERF}}</div>
+      <div class="score-status {{PS_DESK_PERF_COR}}">{{PS_DESK_PERF_STATUS}}</div>
+    </div>
+    ... (repetir para acess, bp, seo)
+  </div>
+  -->
+
+  <hr class="divider">
+
+  <!-- ===========================
+       PLANO DE AÇÃO
+  =========================== -->
+  <p class="section-title">Plano de Ação — Próximos Passos</p>
+
+  <div class="plano-list">
+    {{PLANO_ITEMS}}
+    <!-- Exemplo de item (repetir substituindo variáveis):
+    <div class="plano-item">
+      <div class="plano-num">1</div>
+      <div class="plano-content">
+        <span class="tag tag-critico">Crítico</span>
+        <div class="plano-titulo">Otimizar imagem principal (LCP)</div>
+        <div class="plano-desc">Converter para WebP e adicionar fetchpriority="high" no elemento LCP para reduzir o tempo de carregamento da imagem mais importante da página.</div>
+      </div>
+      <div class="plano-impacto score-ruim">~800ms</div>
+    </div>
+    -->
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===========================
+       CLARITY (se disponível)
+       Remover esta seção se Clarity não estiver configurado
+  =========================== -->
+  {{CLARITY_BLOCO}}
+  <!-- Exemplo de bloco Clarity (substituir variáveis):
+  <p class="section-title">Microsoft Clarity — Comportamento dos Usuários</p>
+  <p class="subtitle" style="color:var(--text-muted);font-size:0.82rem;margin-bottom:1rem;margin-top:-0.5rem">Período: {{CL_PERIODO}}</p>
+
+  <div class="clarity-grid">
+    <div class="clarity-card">
+      <div class="clarity-metric-name">Sessões</div>
+      <div class="clarity-metric-value">{{CL_SESSOES}}</div>
+    </div>
+    <div class="clarity-card">
+      <div class="clarity-metric-name">Duração Média</div>
+      <div class="clarity-metric-value">{{CL_DURACAO}}</div>
+    </div>
+    <div class="clarity-card">
+      <div class="clarity-metric-name">Páginas/Sessão</div>
+      <div class="clarity-metric-value">{{CL_PAGINAS}}</div>
+    </div>
+    <div class="clarity-card">
+      <div class="clarity-metric-name">Rage Clicks</div>
+      <div class="clarity-metric-value {{CL_RAGE_COR}}">{{CL_RAGE}}</div>
+      <div class="clarity-metric-status">cliques de frustração</div>
+    </div>
+    <div class="clarity-card">
+      <div class="clarity-metric-name">Dead Clicks</div>
+      <div class="clarity-metric-value {{CL_DEAD_COR}}">{{CL_DEAD}}</div>
+      <div class="clarity-metric-status">cliques em área sem ação</div>
+    </div>
+    <div class="clarity-card">
+      <div class="clarity-metric-name">Tráfego Bot</div>
+      <div class="clarity-metric-value {{CL_BOT_COR}}">{{CL_BOT}}</div>
+      <div class="clarity-metric-status">filtrado automaticamente</div>
+    </div>
+  </div>
+
+  <p class="section-title" style="margin-top:2rem">Insights de UX</p>
+  <div class="insights-list">
+    {{CL_INSIGHTS}}
+  </div>
+
+  <hr class="divider">
+  -->
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div>
+      <strong>Grupo Arttico</strong> &mdash; Relatório de Performance Web
+    </div>
+    <div>{{DATA_GERACAO}}</div>
+  </footer>
+
+</div>
+</body>
+</html>
