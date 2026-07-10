@@ -39,8 +39,8 @@ Cada cliente tem um `tipo` definido no `contas.yaml` que determina a estrutura d
 
 | Tipo | Clientes atuais | Estrutura de LP |
 |---|---|---|
-| `infoproduto` | Cliente Exemplo B, Cliente Exemplo A | TSL completa (11 seções) |
-| `negocio_local` | Negócio Local Exemplo, Clínica Exemplo | TSL adaptada sem seções de oferta (8 seções) |
+| `infoproduto` | Mateus Medeiros, Rafael Medeiros | TSL completa (11 seções) |
+| `negocio_local` | Limpa Fossa Parnamirim, Click Cirurgia | TSL adaptada sem seções de oferta (8 seções) |
 
 ## Estrutura TSL — Infoprodutos
 

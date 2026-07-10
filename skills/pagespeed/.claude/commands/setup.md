@@ -26,8 +26,8 @@ Se o CC-OS RATOS estiver instalado, ler `ccos-ratos/_contexto/empresa.md` e list
 
 Para cada cliente, perguntar:
 
-1. **Nome do cliente** (ex: "Consultoria Exemplo")
-2. **URL do site principal** (ex: "https://consultoriaexemplo.com.br")
+1. **Nome do cliente** (ex: "Segantini Consultoria")
+2. **URL do site principal** (ex: "https://segantiniconsultoria.com.br")
 3. **URL da landing page de tráfego pago** (se diferente do site, pode ser a mesma)
 4. **Microsoft Clarity — Project ID** (encontrado no painel Clarity > Settings > Project ID)
 5. **Google PageSpeed API Key** (opcional — sem key funciona mas com limites de quota)

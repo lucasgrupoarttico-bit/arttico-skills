@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<!--
+  REFERÊNCIA — Plano de Ação no META (PADRÃO, para 1 produto OU vários)
+  ====================================================================
+  Padrao para qualquer plano de acao no Meta. Exemplo real e renderizavel: Garagem do
+  Particular, 3 produtos (Carros, Motos, Emprestimo), todos Meta. NAO e o boilerplate com
+  tokens {{...}} (esse e o `template-plano.html`); e um MODELO PRONTO pra copiar e adaptar.
+
+  1 PRODUTO: uma secao de produto (avatar + slide de criativos). Pode dispensar o divider
+    numerado por produto e o slide de verba por produto.
+  VARIOS PRODUTOS (este exemplo): um deck so, uma secao por produto (divider numerado +
+    avatar + criativos), + slide de estrategia geral e de distribuicao de verba (.verba com
+    um .pill por produto).
+
+  ---------------------------------------------------------------------------------------
+  CRIATIVOS — dois modos (nunca descrever copy/headline de peca no deck):
+
+  A) PLACEHOLDER (pecas ainda nao existem): molduras 9:16 VAZIAS pro cliente anexar depois.
+     - Grande/flat: .media-row > 5x .media > .media-frame (188x334) com .plus/.fmt-txt dentro.
+     - Funil/pequeno: .ph-row > .ph-group (Topo/Meio/Fundo) > .ph-frames > .ph-frame (92x164).
+
+  B) THUMB CLICAVEL -> INSTAGRAM (peca ja publicada): a moldura vira a arte real e um LINK
+     que abre o post/Reels no Instagram (o PDF preserva o hyperlink como anotacao clicavel).
+     - Video: usar o FRAME DE CAPA (thumbnail) como imagem + selo de play (.vbadge / .vbadge-sm).
+     - Imagem (jpg): entra direto, sem selo de play.
+     - A moldura e um <a class="media-frame" href="URL" target="_blank"> (ou <a class="ph-frame
+       filled" ...> no modo funil, envolto em .ph-item), e a legenda vira "Ver no Instagram" com
+       a seta &#8599;, tambem linkada (.media-cap a / .ph-cap a).
+     - Ver Carros (funil, 3 por etapa, molduras pequenas), Motos e Emprestimo (5 em linha,
+       molduras grandes) neste arquivo como exemplo dos dois layouts.
+
+  COMO GERAR OS THUMBNAILS DE VIDEO (mp4/H.264):
+  - O Chromium do Playwright NAO decodifica H.264. Usar o script `extract-video-thumbs.js`
+    (nesta mesma pasta SKILL_FILES), que abre o Chrome/Edge do sistema com os flags
+    --allow-file-access-from-files --disable-web-security, faz seek e captura um frame via
+    canvas. Salva thumb_<nome>.jpg em uma pasta assets/ ao lado do HTML do deck.
+  - As imagens ficam em clientes/<cliente>/plano-acao/assets/ e sao referenciadas por caminho
+    relativo (assets/thumb_*.jpg). NAO apagar essa pasta: o HTML depende dela pra re-render.
+
+  Numeracao/progresso: .pageno "P / N" e .run width crescente. Sem travessoes. Branco e o unico destaque.
+-->
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600&family=Lora:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  @page { size: 1280px 720px; margin: 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #00002c; }
+  body { font-family: 'Inter', sans-serif; color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  :root {
+    --night: #00002c; --card: #0a0a3d; --frost: #fff;
+    --glacier: rgba(255,255,255,0.92); --mist: rgba(255,255,255,0.52);
+    --faint: rgba(255,255,255,0.34); --hair: rgba(255,255,255,0.12); --hair2: rgba(255,255,255,0.06);
+  }
+
+  .slide {
+    width: 1280px; height: 720px; position: relative; overflow: hidden;
+    background:
+      radial-gradient(58% 48% at 16% 8%, rgba(255,255,255,0.05), transparent 62%),
+      radial-gradient(50% 60% at 92% 100%, rgba(255,255,255,0.025), transparent 60%),
+      #00002c;
+    page-break-after: always; break-after: page;
+  }
+  .slide:last-child { page-break-after: auto; break-after: auto; }
+
+  .eyebrow { position: absolute; top: 56px; left: 72px; font-size: 13px; letter-spacing: 0.24em;
+    text-transform: uppercase; color: var(--mist); font-weight: 600; z-index: 3; }
+  .horizon { position: absolute; left: 0; right: 0; bottom: 86px; height: 1px; background: var(--hair); z-index: 2; }
+  .horizon .run { position: absolute; left: 0; top: 0; height: 1px; background: var(--frost);
+    transform-origin: left center; animation: draw 1.1s cubic-bezier(.2,.7,.2,1) both; }
+  .horizon .run::after { content: ""; position: absolute; right: -2px; top: -2px; width: 5px; height: 5px;
+    border-radius: 50%; background: var(--frost); }
+  .foot { position: absolute; left: 72px; right: 72px; bottom: 44px; display: flex;
+    justify-content: space-between; align-items: center; z-index: 3; }
+  .mark { font-family: 'Lora', serif; font-weight: 600; font-size: 18px; letter-spacing: 3px; color: var(--glacier); }
+  .pageno { font-size: 13px; letter-spacing: 0.18em; color: var(--faint); font-variant-numeric: tabular-nums; }
+
+  .wrap { position: absolute; left: 72px; right: 72px; top: 104px; bottom: 116px; z-index: 2; }
+  .wrap > * { animation: rise .7s cubic-bezier(.2,.7,.2,1) both; }
+  .wrap > *:nth-child(2) { animation-delay: .06s; }
+  .wrap > *:nth-child(3) { animation-delay: .12s; }
+  .wrap > *:nth-child(4) { animation-delay: .18s; }
+  .wrap > *:nth-child(5) { animation-delay: .24s; }
+
+  .headline { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 50px; letter-spacing: -0.02em;
+    line-height: 1.05; color: var(--frost); }
+  .headline .dim { color: var(--mist); }
+  .uline { width: 60px; height: 2px; background: var(--frost); margin: 18px 0 30px; }
+
+  .slide.divider .wrap { display: flex; flex-direction: column; justify-content: center; }
+  .slide.divider .sec { font-size: 14px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--mist);
+    font-weight: 600; margin-bottom: 18px; }
+  .slide.divider .headline { font-size: 92px; }
+  .divider .subline { margin-top: 22px; font-size: 20px; letter-spacing: 0.02em; color: var(--glacier); }
+  .bignum { position: absolute; right: 60px; bottom: 70px; font-family: 'Montserrat', sans-serif; font-weight: 800;
+    font-size: 320px; line-height: 0.78; letter-spacing: -0.04em; color: transparent;
+    -webkit-text-stroke: 1.5px rgba(255,255,255,0.09); z-index: 1; }
+
+  .slide.cover .wrap { display: flex; flex-direction: column; justify-content: center; }
+  .slide.cover .headline { font-size: 104px; line-height: 0.98; }
+  .cover-sub { margin-top: 30px; font-size: 28px; font-weight: 500; color: var(--glacier); }
+  .cover-meta { margin-top: 10px; font-size: 18px; letter-spacing: 0.04em; color: var(--mist); }
+
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 64px; }
+  .col-h { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 21px; color: var(--frost); margin-bottom: 14px;
+    padding-bottom: 12px; border-bottom: 1px solid var(--hair); }
+  ul.list { list-style: none; }
+  ul.list li { position: relative; padding: 7px 0 7px 26px; font-size: 20px; line-height: 1.32; color: var(--glacier); }
+  ul.list li::before { content: ""; position: absolute; left: 2px; top: 16px; width: 7px; height: 7px; background: var(--frost); }
+
+  ul.access { list-style: none; }
+  ul.access li { position: relative; padding: 11px 0 11px 28px; font-size: 21px; color: var(--glacier);
+    border-bottom: 1px solid var(--hair2); }
+  ul.access li:last-child { border-bottom: none; }
+  ul.access li::before { content: ""; position: absolute; left: 2px; top: 19px; width: 8px; height: 1px; background: var(--frost); }
+  ul.access b { color: var(--frost); font-weight: 600; }
+
+  .avatar-row { display: flex; gap: 40px; align-items: flex-start; }
+  .persona { background: var(--card); border-radius: 12px; padding: 18px 24px; width: 330px; flex: none;
+    display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .persona-art { width: 92px; height: 100px; }
+  .persona-art svg { width: 100%; height: 100%; display: block; }
+  .persona-ficha { width: 100%; display: flex; flex-direction: column; gap: 9px; }
+  .pf { display: flex; flex-direction: column; gap: 3px; border-bottom: 1px solid var(--hair2); padding-bottom: 8px; }
+  .pf:last-child { border-bottom: none; padding-bottom: 0; }
+  .pk { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mist); }
+  .pv { font-size: 16px; line-height: 1.3; color: var(--frost); }
+  .avatar-main { flex: 1; }
+  .avatar-main ul.list li { font-size: 18px; padding: 6px 0 6px 24px; }
+  .avatar-main ul.list li::before { top: 14px; }
+
+  .para { font-size: 20px; line-height: 1.55; color: var(--glacier); margin-bottom: 18px; }
+  .para strong { color: var(--frost); font-weight: 600; }
+  .duo { display: flex; gap: 18px; margin-bottom: 18px; }
+  .kcard { flex: 1; background: var(--card); border-radius: 12px; padding: 22px 24px; }
+  .kcard .lbl { font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--mist); margin-bottom: 8px; }
+  .kcard .val { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 23px; color: var(--frost); }
+  .kcard .sub { font-size: 15px; color: var(--mist); margin-top: 8px; line-height: 1.4; }
+
+  .verba { display: flex; flex-direction: column; justify-content: center; height: 100%; }
+  .verba .lbl { font-size: 14px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--mist); margin-bottom: 18px; }
+  .verba .val { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 104px; letter-spacing: -0.03em;
+    line-height: 1; color: var(--frost); }
+  .verba .val span { font-size: 36px; color: var(--mist); font-weight: 700; }
+  .verba .pills { display: flex; gap: 14px; margin-top: 36px; }
+  .pill { padding: 14px 34px; border: 1px solid rgba(255,255,255,0.3); border-radius: 100px; font-weight: 600;
+    font-size: 21px; color: var(--frost); }
+  .verba .note { margin-top: 26px; font-size: 17px; color: var(--mist); }
+
+  .funnel-slide { display: flex; align-items: center; gap: 72px; height: 100%; }
+  .funnel { width: 520px; display: flex; flex-direction: column; clip-path: polygon(0 0, 100% 0, 70% 100%, 30% 100%); }
+  .fband { display: flex; align-items: center; justify-content: center; font-family: 'Montserrat', sans-serif;
+    font-weight: 700; font-size: 21px; color: var(--frost); }
+  .fband.f1 { height: 140px; background: rgba(255,255,255,0.17); }
+  .fband.f2 { height: 140px; background: rgba(255,255,255,0.105); }
+  .fband.f3 { height: 140px; background: rgba(255,255,255,0.05); color: var(--glacier); }
+  .legend { display: flex; flex-direction: column; gap: 24px; }
+  .leg { font-size: 23px; color: var(--glacier); padding-left: 18px; border-left: 1px solid var(--hair); }
+  .leg b { color: var(--frost); font-weight: 600; }
+  .leg.end { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 26px; color: var(--frost); border-left-color: var(--frost); }
+
+  /* Placeholders de criativo 1080x1920 (9:16): 3 peças por etapa do funil */
+  .ph-lead { font-size: 18px; line-height: 1.5; color: var(--glacier); margin-bottom: 10px; }
+  .ph-row { display: flex; gap: 38px; justify-content: center; margin-top: 30px; }
+  .ph-group { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .ph-stage { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 19px; color: var(--frost); }
+  .ph-tag { font-size: 13px; letter-spacing: 0.02em; color: var(--mist); margin-bottom: 8px; }
+  .ph-frames { display: flex; gap: 10px; }
+  .ph-frame { width: 92px; height: 164px; border: 1px dashed rgba(255,255,255,0.32); border-radius: 8px;
+    background: rgba(255,255,255,0.03); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+  .ph-frame .plus { font-size: 26px; font-weight: 200; color: rgba(255,255,255,0.42); line-height: 1; }
+  .ph-frame .fmt-txt { font-size: 9px; letter-spacing: 0.04em; color: var(--mist); font-variant-numeric: tabular-nums; }
+  /* Moldura pequena preenchida com thumb clicável (carros: 3 por etapa) */
+  .ph-frame.filled { display: block; text-decoration: none; border: none; padding: 0; position: relative;
+    overflow: hidden; background: #05052e; box-shadow: 0 4px 14px rgba(0,0,0,0.3); }
+  .ph-frame.filled img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ph-frame.filled .vbadge-sm { position: absolute; right: 5px; bottom: 5px; width: 18px; height: 18px;
+    border-radius: 50%; background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; }
+  .ph-frame.filled .vbadge-sm svg { width: 7px; height: 7px; margin-left: 1px; }
+  .ph-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .ph-cap { font-size: 9px; letter-spacing: 0.01em; color: var(--mist); text-align: center; white-space: nowrap; }
+  .ph-cap a { color: inherit; text-decoration: none; }
+
+  /* Anexos de criativos com arte real (thumb de vídeo ou imagem), 5 por seção */
+  .media-row { display: flex; gap: 20px; justify-content: center; margin-top: 30px; }
+  .media { display: flex; flex-direction: column; align-items: center; gap: 9px; }
+  .media-frame { display: block; text-decoration: none; width: 188px; height: 334px; border-radius: 10px;
+    overflow: hidden; position: relative; background: #05052e; box-shadow: 0 6px 20px rgba(0,0,0,0.35); }
+  .media-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .media-frame .vbadge { position: absolute; right: 9px; bottom: 9px; width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(0,0,0,0.55); display: flex; align-items: center; justify-content: center; }
+  .media-frame .vbadge svg { width: 11px; height: 11px; margin-left: 1px; }
+  .media-cap { font-size: 12px; color: var(--mist); letter-spacing: 0.02em; text-align: center;
+    max-width: 188px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .media-cap a { color: inherit; text-decoration: none; }
+
+  .flow { display: flex; flex-direction: column; align-items: center; margin-top: 40px; }
+  .frow { display: flex; align-items: stretch; gap: 16px; }
+  .fbox { background: var(--card); border-radius: 12px; padding: 18px 26px; min-width: 210px; text-align: center; }
+  .fbox .ft { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 20px; color: var(--frost); }
+  .fbox .fd { font-size: 14px; color: var(--mist); margin-top: 4px; }
+  .arrow { display: flex; align-items: center; font-size: 22px; color: var(--faint); }
+  .varrow { font-size: 22px; color: var(--faint); margin: 10px 0; }
+
+  .slide.end .wrap { display: flex; flex-direction: column; justify-content: center; }
+  .end-mark { font-family: 'Lora', serif; font-weight: 700; font-size: 110px; letter-spacing: 7px; color: var(--frost); line-height: 1; }
+  .end-line { font-size: 19px; color: var(--mist); margin-top: 26px; letter-spacing: 0.02em; }
+
+  @keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+  @keyframes draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @media print { *, *::before, *::after { animation: none !important; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; } }
+</style>
+</head>
+<body>
+
+<!-- 1 · CAPA -->
+<div class="slide cover">
+  <div class="eyebrow">Grupo Arttico</div>
+  <div class="wrap">
+    <div class="headline">Plano <span class="dim">de</span> Ação</div>
+    <div class="cover-sub">Garagem do Particular</div>
+    <div class="cover-meta">Meta Ads · 3 produtos · Julho de 2026</div>
+  </div>
+  <div class="horizon"><div class="run" style="width:5.26%"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">1 / 19</span></div>
+</div>
+
+<!-- 2 · RESULTADOS ESPERADOS -->
+<div class="slide">
+  <div class="eyebrow">Plano de Ação · Garagem do Particular</div>
+  <div class="wrap">
+    <div class="headline">Resultados <span class="dim">esperados</span></div>
+    <div class="uline"></div>
+    <div class="grid2">
+      <div>
+        <div class="col-h">Curto prazo · 30 dias</div>
+        <ul class="list">
+          <li>Contas, pixel e públicos configurados</li>
+          <li>Campanhas dos 3 produtos no ar</li>
+          <li>Teste de criativos</li>
+          <li>Primeiros leads qualificados chegando</li>
+          <li>CPL de referência por produto</li>
+        </ul>
+      </div>
+      <div>
+        <div class="col-h">Médio prazo · 90 dias</div>
+        <ul class="list">
+          <li>CPL qualificado estável por produto</li>
+          <li>Escala de criativos</li>
+          <li>Públicos validados nos 3 produtos</li>
+          <li>Menos volume, mais fechamento no comercial</li>
+          <li>Base de remarketing estruturada e ativa</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="horizon"><div class="run" style="width:10.53%"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">2 / 19</span></div>
+</div>
+
+<!-- 3 · DIVIDER 01 ACESSOS -->
+<div class="slide divider">
+  <div class="eyebrow">Plano de Ação · Garagem do Particular</div>
+  <div class="bignum">01</div>
+  <div class="wrap"><div class="sec">Seção 01</div><div class="headline">Acessos</div></div>
+  <div class="horizon"><div class="run" style="width:15.79%"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">3 / 19</span></div>
+</div>
+
+<!-- 4 · ACESSOS -->
+<div class="slide">
+  <div class="eyebrow">Plano de Ação · Garagem do Particular</div>
+  <div class="wrap">
+    <div class="headline">Acessos <span class="dim">necessários</span></div>
+    <div class="uline"></div>
+    <ul class="access">
+      <li><b>Gerenciador de Negócios (Meta)</b> liberado via Caio, que detém os acessos hoje</li>
+      <li><b>Acesso ao Google Meu Negócio</b> da empresa</li>
+      <li><b>Página do Facebook</b> e <b>Instagram</b> @garagemdoparticular</li>
+      <li><b>Pixel e API de Conversões</b> instalados e validados</li>
+      <li><b>Números de WhatsApp</b> de destino, unificando na entrada da IA Orion</li>
+      <li><b>Drive de marca</b> com logo e paleta</li>
+    </ul>
+  </div>
+  <div class="horizon"><div class="run" style="width:21.05%"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">4 / 19</span></div>
+</div>
+
+<!-- 5 · DIVIDER 02 ESTRATÉGIA -->
+<div class="slide divider">
+  <div class="eyebrow">Plano de Ação · Garagem do Particular</div>
+  <div class="bignum">02</div>
+  <div class="wrap"><div class="sec">Seção 02</div><div class="headline">Estratégia</div></div>
+  <div class="horizon"><div class="run" style="width:26.32%"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">5 / 19</span></div>
+</div>
+
+<!-- 6 · ESTRATÉGIA E PLATAFORMA -->
+<div class="slide">
+  <div class="eyebrow">Plano de Ação · Garagem do Particular</div>
+  <div class="wrap">
+    <div class="headline">Estratégia <span class="dim">e plataforma</span></div>
+    <div class="uline"></div>
+    <div class="para"><strong>O problema não é volume, é qualificação.</strong> A esteira comercial já está pronta. O que trava é o lead que chega desalinhado, cansa o time e queima a operação. Todo o plano mira em menos lead e mais fechamento.</div>
+    <div class="para">Os três produtos rodam no <strong>Meta</strong>, cada um com verba própria. A qualificação vem de <strong>criativo e segmentação</strong>, não de lead barato. Google fica para uma segunda fase.</div>
+    <div class="duo">
+      <div class="kcard"><div class="lbl">Plataforma</div><div class="val">Meta Ads</div><div class="sub">Instagram e Facebook. Demanda latente e prova em vídeo, que já converte pra marca.</div></div>
+      <div class="kcard"><div class="lbl">Objetivo</div><div class="val">Leads qualificados</div><div class="sub">Conversas no WhatsApp com pré-qualificação da IA Orion na entrada.</div></div>
+    </div>
+  </div>
+  <div class="horizon"><div class="run" style="width:31.58%"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">6 / 19</span></div>
+</div>
+
+<!-- 7 · DISTRIBUIÇÃO DE VERBA -->
+<div class="slide">
+  <div class="eyebrow">Plano de Ação · Garagem do Particular</div>
+  <div class="wrap">
+    <div class="verba">
+      <div class="lbl">Investimento em mídia</div>
+      <div class="val">R$ 5,5 mil<span> /mês</span></div>
+      <div class="pills">
+        <span class="pill">Carros · R$ 2 mil</span>
+        <span class="pill">Motos · R$ 2 mil</span>
+        <span class="pill">Empréstimo · R$ 1,5 mil</span>
+      </div>
+      <div class="note">Cada produto com verba independente. O cliente do agenciamento ainda banca o tráfego do próprio carro, à parte.</div>
+    </div>
+  </div>
+  <div class="horizon"><div class="run" style="width:36.84%"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">7 / 19</span></div>
+</div>
+
+<!-- 8 · FUNIL META (LEGENDA) -->
+<div class="slide">
+  <div class="eyebrow">Plano de Ação · Garagem do Particular</div>
+  <div class="wrap">
+    <div class="funnel-slide">
+      <div class="funnel">
+        <div class="fband f1">Reconhecimento</div>
+        <div class="fband f2">Relacionamento</div>
+        <div class="fband f3">Remarketing</div>
+      </div>
+      <div class="legend">
+        <div class="leg"><b>Reconhecimento.</b> Audiência fria. Apresenta o modelo e educa sobre a dor.</div>
+        <div class="leg"><b>Relacionamento.</b> Prova testemunhal e autoridade pra quem já viu a marca.</div>
+        <div class="leg"><b>Remarketing.</b> Quem engajou. Oferta e quebra de objeção.</div>
+        <div class="leg end">Toda etapa leva à conversa no WhatsApp.</div>
+      </div>
+    </div>
+  </div>
+  <div class="horizon"><div class="run" style="width:42.11%"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">8 / 19</span></div>
+</div>
+
+<!-- 9 · DIVIDER 03 CARROS -->
+<div class="slide divider">
+  <div class="eyebrow">Plano de Ação · Garagem do Particular</div>
+  <div class="bignum">03</div>
+  <div class="wrap"><div class="sec">Produto 01 · Meta Ads</div><div class="headline">Carros</div><div class="subline">R$ 2 mil/mês · agenciamento pelo valor justo, sem pressa</div></div>
+  <div class="horizon"><div class="run" style="width:47.37%"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">9 / 19</span></div>
+</div>
+
+<!-- 10 · AVATAR CARROS -->
+<div class="slide">
+  <div class="eyebrow">Carros · agenciamento</div>
+  <div class="wrap">
+    <div class="headline">Avatar <span class="dim">· o público</span></div>
+    <div class="uline"></div>
+    <div class="avatar-row">
+      <div class="persona">
+        <div class="persona-art">
+          <svg viewBox="0 0 140 150" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="70" cy="46" r="30"/>
+            <path d="M70 76 L70 92"/>
+            <path d="M18 148 C18 110, 43 92, 70 92 C97 92, 122 110, 122 148"/>
+          </svg>
+        </div>
+        <div class="persona-ficha">
+          <div class="pf"><span class="pk">Idade</span><span class="pv">35 a 55 anos</span></div>
+          <div class="pf"><span class="pk">Perfil</span><span class="pv">Homem, profissional ou servidor com boa renda</span></div>
+          <div class="pf"><span class="pk">Onde</span><span class="pv">Mossoró e região, até 100 km</span></div>
+          <div class="pf"><span class="pk">Momento</span><span class="pv">Vai trocar de carro</span></div>
+        </div>
+      </div>
+      <div class="avatar-main">
+        <div class="grid2">
+          <div><div class="col-h">Dores</div><ul class="list">
+            <li>Concessionária paga muito abaixo</li>
+            <li>Não tem tempo pra vender</li>
+            <li>Receio de estranho vendo o carro</li>
+            <li>Anúncio na OLX não anda</li>
+            <li>Sabe que vai perder na troca</li>
+          </ul></div>
+          <div><div class="col-h">Desejos</div><ul class="list">
+            <li>Vender pelo valor justo</li>
+            <li>Trocar sem dor de cabeça</li>
+            <li>Carro mais novo sem perder tanto</li>
+            <li>Alguém conduzindo tudo por ele</li>
+            <li>Negociação transparente</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="horizon"><div class="run" style="width:52.63%"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">10 / 19</span></div>
+</div>
+
+<!-- 11 · CRIATIVOS CARROS (placeholders) -->
+<div class="slide">
+  <div class="eyebrow">Carros · agenciamento</div>
+  <div class="wrap">
+    <div class="headline">Criativos <span class="dim">por funil</span></div>
+    <div class="uline"></div>
+    <div class="ph-row">
+      <div class="ph-group"><div class="ph-stage">Topo</div><div class="ph-tag">Reconhecimento</div>
+        <div class="ph-frames">
+          <div class="ph-item"><a class="ph-frame filled" href="https://www.instagram.com/reel/DHsyuCgR4rP/" target="_blank" rel="noopener"><img src="assets/thumb_carrostopo01.jpg" alt=""><div class="vbadge-sm"><svg viewBox="0 0 10 10" fill="#fff"><path d="M2 1 L9 5 L2 9 Z"/></svg></div></a><div class="ph-cap"><a href="https://www.instagram.com/reel/DHsyuCgR4rP/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+          <div class="ph-item"><a class="ph-frame filled" href="https://www.instagram.com/reel/DCCpNZrpq5Z/" target="_blank" rel="noopener"><img src="assets/thumb_carrostopo02.jpg" alt=""><div class="vbadge-sm"><svg viewBox="0 0 10 10" fill="#fff"><path d="M2 1 L9 5 L2 9 Z"/></svg></div></a><div class="ph-cap"><a href="https://www.instagram.com/reel/DCCpNZrpq5Z/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+          <div class="ph-item"><a class="ph-frame filled" href="https://www.instagram.com/p/DWzALKEETaf/" target="_blank" rel="noopener"><img src="assets/thumb_carrostopo03.jpg" alt=""><div class="vbadge-sm"><svg viewBox="0 0 10 10" fill="#fff"><path d="M2 1 L9 5 L2 9 Z"/></svg></div></a><div class="ph-cap"><a href="https://www.instagram.com/p/DWzALKEETaf/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+        </div></div>
+      <div class="ph-group"><div class="ph-stage">Meio</div><div class="ph-tag">Relacionamento</div>
+        <div class="ph-frames">
+          <div class="ph-item"><a class="ph-frame filled" href="https://www.instagram.com/p/DJsEufVvtcY/" target="_blank" rel="noopener"><img src="assets/thumb_carrosmeio01.jpg" alt=""><div class="vbadge-sm"><svg viewBox="0 0 10 10" fill="#fff"><path d="M2 1 L9 5 L2 9 Z"/></svg></div></a><div class="ph-cap"><a href="https://www.instagram.com/p/DJsEufVvtcY/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+          <div class="ph-item"><a class="ph-frame filled" href="https://www.instagram.com/p/DW83uJKkZHj/" target="_blank" rel="noopener"><img src="assets/thumb_meiocarros01.jpg" alt=""><div class="vbadge-sm"><svg viewBox="0 0 10 10" fill="#fff"><path d="M2 1 L9 5 L2 9 Z"/></svg></div></a><div class="ph-cap"><a href="https://www.instagram.com/p/DW83uJKkZHj/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+          <div class="ph-item"><a class="ph-frame filled" href="https://www.instagram.com/reel/DCCpNZrpq5Z/" target="_blank" rel="noopener"><img src="assets/thumb_provasocialcarrosmeio.jpg" alt=""><div class="vbadge-sm"><svg viewBox="0 0 10 10" fill="#fff"><path d="M2 1 L9 5 L2 9 Z"/></svg></div></a><div class="ph-cap"><a href="https://www.instagram.com/reel/DCCpNZrpq5Z/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+        </div></div>
+      <div class="ph-group"><div class="ph-stage">Fundo</div><div class="ph-tag">Remarketing</div>
+        <div class="ph-frames">
+          <div class="ph-item"><a class="ph-frame filled" href="https://www.instagram.com/p/DUYLkdPETrs/" target="_blank" rel="noopener"><img src="assets/thumb_carrosfundo03.jpg" alt=""><div class="vbadge-sm"><svg viewBox="0 0 10 10" fill="#fff"><path d="M2 1 L9 5 L2 9 Z"/></svg></div></a><div class="ph-cap"><a href="https://www.instagram.com/p/DUYLkdPETrs/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+          <div class="ph-item"><a class="ph-frame filled" href="https://www.instagram.com/p/DId0wpaxNNU/" target="_blank" rel="noopener"><img src="assets/thumb_carrosfundo04.jpg" alt=""><div class="vbadge-sm"><svg viewBox="0 0 10 10" fill="#fff"><path d="M2 1 L9 5 L2 9 Z"/></svg></div></a><div class="ph-cap"><a href="https://www.instagram.com/p/DId0wpaxNNU/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+          <div class="ph-item"><a class="ph-frame filled" href="https://www.instagram.com/p/DJUVHz7OO-q/" target="_blank" rel="noopener"><img src="assets/thumb_carrosfundo05.jpg" alt=""><div class="vbadge-sm"><svg viewBox="0 0 10 10" fill="#fff"><path d="M2 1 L9 5 L2 9 Z"/></svg></div></a><div class="ph-cap"><a href="https://www.instagram.com/p/DJUVHz7OO-q/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+        </div></div>
+    </div>
+  </div>
+  <div class="horizon"><div class="run" style="width:57.89%"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">11 / 19</span></div>
+</div>
+
+<!-- 12 · DIVIDER 04 MOTOS -->
+<div class="slide divider">
+  <div class="eyebrow">Plano de Ação · Garagem do Particular</div>
+  <div class="bignum">04</div>
+  <div class="wrap"><div class="sec">Produto 02 · Meta Ads</div><div class="headline">Motos</div><div class="subline">R$ 2 mil/mês · ângulo de custo-benefício, não zero de entrada</div></div>
+  <div class="horizon"><div class="run" style="width:63.16%"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">12 / 19</span></div>
+</div>
+
+<!-- 13 · AVATAR MOTOS -->
+<div class="slide">
+  <div class="eyebrow">Motos · Shineray 0km</div>
+  <div class="wrap">
+    <div class="headline">Avatar <span class="dim">· o público</span></div>
+    <div class="uline"></div>
+    <div class="avatar-row">
+      <div class="persona">
+        <div class="persona-art">
+          <svg viewBox="0 0 140 150" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="70" cy="46" r="30"/>
+            <path d="M70 76 L70 92"/>
+            <path d="M18 148 C18 110, 43 92, 70 92 C97 92, 122 110, 122 148"/>
+          </svg>
+        </div>
+        <div class="persona-ficha">
+          <div class="pf"><span class="pk">Idade</span><span class="pv">25 a 45 anos</span></div>
+          <div class="pf"><span class="pk">Perfil</span><span class="pv">Classe C, depende de locomoção no dia a dia</span></div>
+          <div class="pf"><span class="pk">Onde</span><span class="pv">Mossoró e região, entrega no interior</span></div>
+          <div class="pf"><span class="pk">Momento</span><span class="pv">Gasta muito com moto-Uber</span></div>
+        </div>
+      </div>
+      <div class="avatar-main">
+        <div class="grid2">
+          <div><div class="col-h">Dores</div><ul class="list">
+            <li>Gasta demais com moto-Uber</li>
+            <li>Carro pesa muito no bolso</li>
+            <li>Precisa de locomoção barata</li>
+            <li>Medo de moto sem garantia</li>
+            <li>Falta uma opção pra casa</li>
+          </ul></div>
+          <div><div class="col-h">Desejos</div><ul class="list">
+            <li>Moto 0km que cabe no bolso</li>
+            <li>Parcela menor que o Uber</li>
+            <li>Garantia e assistência perto</li>
+            <li>Economia todo mês</li>
+            <li>Sair rodando com segurança</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="horizon"><div class="run" style="width:68.42%"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">13 / 19</span></div>
+</div>
+
+<!-- 14 · CRIATIVOS MOTOS (placeholders) -->
+<div class="slide">
+  <div class="eyebrow">Motos · Shineray 0km</div>
+  <div class="wrap">
+    <div class="headline">Criativos</div>
+    <div class="uline"></div>
+    <div class="media-row">
+      <div class="media"><a class="media-frame" href="https://www.instagram.com/p/DXbsNihAdzX/" target="_blank" rel="noopener"><img src="assets/thumb_moto02.jpg" alt=""><div class="vbadge"><svg viewBox="0 0 10 10" fill="#fff"><path d="M2 1 L9 5 L2 9 Z"/></svg></div></a><div class="media-cap"><a href="https://www.instagram.com/p/DXbsNihAdzX/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+      <div class="media"><a class="media-frame" href="https://www.instagram.com/p/DRerE7QkXFL/" target="_blank" rel="noopener"><img src="assets/thumb_motoprovasocial.jpg" alt=""><div class="vbadge"><svg viewBox="0 0 10 10" fill="#fff"><path d="M2 1 L9 5 L2 9 Z"/></svg></div></a><div class="media-cap"><a href="https://www.instagram.com/p/DRerE7QkXFL/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+      <div class="media"><a class="media-frame" href="https://www.instagram.com/p/DXg-OxaARQw/" target="_blank" rel="noopener"><img src="assets/thumb_moto04.jpg" alt=""><div class="vbadge"><svg viewBox="0 0 10 10" fill="#fff"><path d="M2 1 L9 5 L2 9 Z"/></svg></div></a><div class="media-cap"><a href="https://www.instagram.com/p/DXg-OxaARQw/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+      <div class="media"><a class="media-frame" href="https://www.instagram.com/p/DMQA9vCxZPZ/" target="_blank" rel="noopener"><img src="assets/thumb_moto05.jpg" alt=""><div class="vbadge"><svg viewBox="0 0 10 10" fill="#fff"><path d="M2 1 L9 5 L2 9 Z"/></svg></div></a><div class="media-cap"><a href="https://www.instagram.com/p/DMQA9vCxZPZ/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+      <div class="media"><a class="media-frame" href="https://www.instagram.com/p/DMk16Ebs4-d/" target="_blank" rel="noopener"><img src="assets/thumb_Influencermoto-video1.jpg" alt=""><div class="vbadge"><svg viewBox="0 0 10 10" fill="#fff"><path d="M2 1 L9 5 L2 9 Z"/></svg></div></a><div class="media-cap"><a href="https://www.instagram.com/p/DMk16Ebs4-d/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+    </div>
+  </div>
+  <div class="horizon"><div class="run" style="width:73.68%"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">14 / 19</span></div>
+</div>
+
+<!-- 15 · DIVIDER 05 EMPRÉSTIMO -->
+<div class="slide divider">
+  <div class="eyebrow">Plano de Ação · Garagem do Particular</div>
+  <div class="bignum">05</div>
+  <div class="wrap"><div class="sec">Produto 03 · Meta Ads</div><div class="headline">Empréstimo</div><div class="subline">R$ 1,5 mil/mês · público qualificado, longe do negativado</div></div>
+  <div class="horizon"><div class="run" style="width:78.95%"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">15 / 19</span></div>
+</div>
+
+<!-- 16 · AVATAR EMPRÉSTIMO -->
+<div class="slide">
+  <div class="eyebrow">Empréstimo com garantia veicular</div>
+  <div class="wrap">
+    <div class="headline">Avatar <span class="dim">· o público</span></div>
+    <div class="uline"></div>
+    <div class="avatar-row">
+      <div class="persona">
+        <div class="persona-art">
+          <svg viewBox="0 0 140 150" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="70" cy="46" r="30"/>
+            <path d="M70 76 L70 92"/>
+            <path d="M18 148 C18 110, 43 92, 70 92 C97 92, 122 110, 122 148"/>
+          </svg>
+        </div>
+        <div class="persona-ficha">
+          <div class="pf"><span class="pk">Idade</span><span class="pv">30 a 50 anos</span></div>
+          <div class="pf"><span class="pk">Perfil</span><span class="pv">Classe média, carro quitado de 30 a 40 mil</span></div>
+          <div class="pf"><span class="pk">Onde</span><span class="pv">RN, PB e CE, 100% remoto</span></div>
+          <div class="pf"><span class="pk">Momento</span><span class="pv">Precisa de capital, não é o desesperado</span></div>
+        </div>
+      </div>
+      <div class="avatar-main">
+        <div class="grid2">
+          <div><div class="col-h">Dores</div><ul class="list">
+            <li>Ia vender o carro por dinheiro</li>
+            <li>Precisa de capital sem perder o carro</li>
+            <li>Desconfia que é golpe</li>
+            <li>Não quer juros de agiota</li>
+            <li>Medo de perder o veículo</li>
+          </ul></div>
+          <div><div class="col-h">Desejos</div><ul class="list">
+            <li>Levantar capital sem vender</li>
+            <li>Continuar usando o carro</li>
+            <li>Processo seguro e claro</li>
+            <li>Dinheiro na conta rápido</li>
+            <li>Parcela que cabe</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="horizon"><div class="run" style="width:84.21%"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">16 / 19</span></div>
+</div>
+
+<!-- 17 · CRIATIVOS EMPRÉSTIMO (placeholders) -->
+<div class="slide">
+  <div class="eyebrow">Empréstimo com garantia veicular</div>
+  <div class="wrap">
+    <div class="headline">Criativos</div>
+    <div class="uline"></div>
+    <div class="media-row">
+      <div class="media"><a class="media-frame" href="https://www.instagram.com/p/DaBFwIkxX0x/" target="_blank" rel="noopener"><img src="../marca/emprestimo.jpg" alt=""></a><div class="media-cap"><a href="https://www.instagram.com/p/DaBFwIkxX0x/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+      <div class="media"><a class="media-frame" href="https://www.instagram.com/reel/DKhQY0WxTaV/" target="_blank" rel="noopener"><img src="assets/thumb_emprestimo01.jpg" alt=""><div class="vbadge"><svg viewBox="0 0 10 10" fill="#fff"><path d="M2 1 L9 5 L2 9 Z"/></svg></div></a><div class="media-cap"><a href="https://www.instagram.com/reel/DKhQY0WxTaV/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+      <div class="media"><a class="media-frame" href="https://www.instagram.com/p/DRUHWxGkb-v/" target="_blank" rel="noopener"><img src="assets/thumb_emprestimo02.jpg" alt=""><div class="vbadge"><svg viewBox="0 0 10 10" fill="#fff"><path d="M2 1 L9 5 L2 9 Z"/></svg></div></a><div class="media-cap"><a href="https://www.instagram.com/p/DRUHWxGkb-v/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+      <div class="media"><a class="media-frame" href="https://www.instagram.com/reel/DQe692LD7Hg/" target="_blank" rel="noopener"><img src="assets/thumb_emprestimo03.jpg" alt=""><div class="vbadge"><svg viewBox="0 0 10 10" fill="#fff"><path d="M2 1 L9 5 L2 9 Z"/></svg></div></a><div class="media-cap"><a href="https://www.instagram.com/reel/DQe692LD7Hg/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+      <div class="media"><a class="media-frame" href="https://www.instagram.com/reel/DQb1fPeEYJl/" target="_blank" rel="noopener"><img src="assets/thumb_emprestimo04.jpg" alt=""><div class="vbadge"><svg viewBox="0 0 10 10" fill="#fff"><path d="M2 1 L9 5 L2 9 Z"/></svg></div></a><div class="media-cap"><a href="https://www.instagram.com/reel/DQb1fPeEYJl/" target="_blank" rel="noopener">Ver no Instagram &#8599;</a></div></div>
+    </div>
+  </div>
+  <div class="horizon"><div class="run" style="width:89.47%"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">17 / 19</span></div>
+</div>
+
+<!-- 18 · FUNIL DE CONVERSÃO -->
+<div class="slide">
+  <div class="eyebrow">Plano de Ação · Garagem do Particular</div>
+  <div class="wrap">
+    <div class="headline">Funil <span class="dim">de conversão</span></div>
+    <div class="uline"></div>
+    <div class="flow">
+      <div class="frow">
+        <div class="fbox"><div class="ft">Anúncio Meta</div><div class="fd">Clique pro WhatsApp</div></div>
+        <div class="arrow">&#8594;</div>
+        <div class="fbox"><div class="ft">IA Orion</div><div class="fd">Pré-qualifica na entrada</div></div>
+        <div class="arrow">&#8594;</div>
+        <div class="fbox"><div class="ft">SDR</div><div class="fd">Spot Sales</div></div>
+      </div>
+      <div class="varrow">&#8595;</div>
+      <div class="frow">
+        <div class="fbox"><div class="ft">Atendimento</div><div class="fd">Visita à loja ou remoto</div></div>
+        <div class="arrow">&#8594;</div>
+        <div class="fbox"><div class="ft">Closer</div><div class="fd">Passada de bastão</div></div>
+        <div class="arrow">&#8594;</div>
+        <div class="fbox"><div class="ft">Boom</div><div class="fd">Contrato e cadastro</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="horizon"><div class="run" style="width:94.74%"></div></div>
+  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">18 / 19</span></div>
+</div>
+
+<!-- 19 · FECHAMENTO -->
+<div class="slide end">
+  <div class="wrap">
+    <div class="eyebrow" style="position:static;left:auto;top:auto;margin-bottom:24px;">Grupo Arttico</div>
+    <div class="end-mark">ARTTICO</div>
+    <div class="end-line">Vamos juntos construir uma parceria de sucesso.</div>
+  </div>
+  <div class="horizon"><div class="run" style="width:100%"></div></div>
+  <div class="foot"><span class="mark"></span><span class="pageno">19 / 19</span></div>
+</div>
+
+</body>
+</html>

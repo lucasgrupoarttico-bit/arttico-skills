@@ -62,12 +62,12 @@ cd ".claude\skills\apify\scripts"; python apify.py <fonte> <args>
 
 **Google Maps — Lista (leads):**
 ```powershell
-python apify.py google-maps --query "dentista em Natal RN" --max 50 --country br --cliente "Cliente Exemplo"
+python apify.py google-maps --query "dentista em Natal RN" --max 50 --country br --cliente "Igor Flor"
 ```
 
 **Google Maps — Auditoria de ficha (rankeamento do nicho):**
 ```powershell
-python apify.py google-maps-audit --query "dentista em Natal RN" --target "Nome da Clinica" --max 50 --cliente "Cliente Exemplo"
+python apify.py google-maps-audit --query "dentista em Natal RN" --target "Nome da Clinica" --max 50 --cliente "Igor Flor"
 ```
 Coleta as fichas do nicho na ordem em que o Google Maps ranqueia e, para cada uma, traz:
 **nome, categoria, descricao, nota, nº de avaliacoes, horario de funcionamento, horario de pico
@@ -77,7 +77,7 @@ O JSON salvo contem **todos os campos** de cada ficha para a analise.
 
 **Instagram (perfil ou hashtag):**
 ```powershell
-python apify.py instagram --profile nomedoperfil --type posts --limit 30 --cliente "Marca Exemplo"
+python apify.py instagram --profile nomedoperfil --type posts --limit 30 --cliente "Prime Gourmet"
 python apify.py instagram --hashtag marketingdigital --limit 30
 ```
 
@@ -90,7 +90,7 @@ python apify.py tiktok --hashtag emagrecimento --limit 30
 
 **Facebook Ad Library (anuncios de concorrente):**
 ```powershell
-python apify.py facebook-ads --term "nome da marca" --country BR --max 50 --cliente "Empresa Exemplo"
+python apify.py facebook-ads --term "nome da marca" --country BR --max 50 --cliente "Geoenge"
 python apify.py facebook-ads --page-url "https://www.facebook.com/ads/library/?...page..." --max 50
 ```
 

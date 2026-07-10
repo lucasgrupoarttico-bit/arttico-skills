@@ -113,7 +113,7 @@ prefixo `/public_html/` depende de onde a **conta FTP abre** — isso e definido
 | **Acima, na raiz da conta** | precisa do prefixo `/public_html/` | `/public_html/lp/`, `/public_html/tqb/` |
 
 **Padronizacao recomendada:** criar todas as contas FTP com a home **no `public_html`**
-(como Clínica Exemplo, Cliente Exemplo A e Cliente Exemplo B). Assim o `server-dir` fica sempre
+(como Click Cirurgia, Rafael Medeiros e Mateus Medeiros). Assim o `server-dir` fica sempre
 relativo simples e nunca precisa de `/public_html/`. NUNCA adicionar `/public_html/` num
 server-dir cuja conta ja abre dentro do `public_html` — isso vira `public_html/public_html/...`
 e quebra o deploy.

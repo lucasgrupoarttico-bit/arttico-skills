@@ -3,24 +3,29 @@
   TEMPLATE OFICIAL — Direcionamento de Criativos (folha VERTICAL 1080x1528, sistema
   "Disciplina Ártica" do Grupo Arttico). Apresentação separada do Plano de Ação.
   ============================================================================================
-  ESTRUTURA (híbrido: estratégia + execução):
+  ESTRUTURA (enxuta): NÃO existe "Visão por funil" nem seções de "Copy". Nunca incluir.
     1. Capa
     2. Briefing técnico (ficha: Peças, Objetivo, Tom de voz, Formato, Veiculação, Orientações)
     3. Avatar (dores e desejos)
-    4. Visão por funil (Topo / Meio / Fundo: ângulo + formatos)
-    5. SOLICITAÇÕES — roteiros cena a cena (tabela Arte | Texto | Imagem | Observações).
+    4. SOLICITAÇÕES — roteiros cena a cena (tabela Arte | Texto | Imagem | Observações).
        Uma Solicitação por peça. Duplicar o slide quantas peças forem necessárias.
-       Cada Solicitação é marcada com a etapa de funil e o formato.
-    6. Fechamento
+       Cada Solicitação é marcada com a etapa de funil (pill) e o formato.
+    5. Fechamento
 
   REGRAS:
-    - O FUNDO de funil precisa ter pelo menos uma Solicitação de "UGC em vídeo" (roteiro no
-      padrão "E eu que...") e uma de "Estático · formato notícia".
     - Cada cena: Texto = a fala/legenda exata; Imagem = como captar ("Mateus falando", "caixa
       de perguntas", "aluno falando"); Observações = grafismo/lettering ("Lettering no R$ 79,90").
-    - Spec de peça: Formato Story 1080x1920 (declarar no briefing).
+    - ESTÁTICO também é Solicitação, no mesmo formato de tabela: 1 linha (Arte "1") com
+      headline + detalhes + CTA na coluna Texto; Imagem = layout; Observações = grifos/lettering.
+    - MOLDURA DE ANEXO ({{SOL_ANEXO}}): só nas solicitações que TÊM referência (o usuário indica).
+      Vídeo (.attach.v) e Estático (.attach.s) usam 1080x1920. Sem referência, deixar vazio.
+      Vazia (a preencher):   <div class="attach-wrap"><div class="attach-label">Anexar referência (vídeo)</div>
+                             <div class="attach v"><div class="plus">+</div><div class="fmt">1080 x 1920</div><div class="sub">Anexar</div></div></div>
+      Com referência (thumb clicável): <div class="attach-wrap"><div class="attach-label"><a href="LINK" target="_blank">Ver referência (vídeo)</a></div>
+                             <a class="attach v filled" href="LINK" target="_blank"><img src="THUMB"><div class="vbadge">(play)</div></a></div>
     - Numeração/progresso: contar N e preencher .pageno (P / N) e .run (width:<P/N*100>%).
-    - Sem travessões (—). Branco é o único destaque. Sem cor vibrante.
+    - Sem travessões (—). Branco é o único destaque. Sem cor vibrante. Identidade ARTTICO sempre.
+    - Modelo pronto de referência (exemplo real): SKILL_FILES/referencia-direcionamento.html
     - Render: node render-pdf.js <html> <pdf> 1080 1528
 -->
 <html lang="pt-BR">
@@ -139,6 +144,16 @@
   .script col.c-img { width: 150px; }
   .script col.c-obs { width: 150px; }
 
+  /* MOLDURA DE ANEXO (só nas solicitações COM referência). v = vídeo 1080x1920, s = estático 1080x1440 */
+  .attach-wrap { margin-top: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .attach-label { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mist); }
+  .attach { border: 2px dashed rgba(255,255,255,0.28); border-radius: 14px; background: rgba(255,255,255,0.03);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+  .attach.v, .attach.s { width: 206px; height: 366px; }
+  .attach .plus { font-size: 46px; font-weight: 200; color: rgba(255,255,255,0.4); line-height: 1; }
+  .attach .fmt { font-size: 15px; letter-spacing: 0.06em; color: var(--frost); }
+  .attach .sub { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); }
+
   .slide.end .wrap { display: flex; flex-direction: column; justify-content: center; }
   .end-mark { font-family: 'Lora', serif; font-weight: 700; font-size: 96px; letter-spacing: 6px; color: var(--frost); line-height: 1; }
   .end-line { font-size: 20px; color: var(--mist); margin-top: 28px; letter-spacing: 0.02em; }
@@ -207,23 +222,7 @@
   <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>
 </div>
 
-<!-- 4 VISÃO POR FUNIL (ângulo + formatos por etapa) -->
-<div class="slide">
-  <div class="eyebrow">Criativos · {{CLIENTE_CURTO}}</div>
-  <div class="wrap">
-    <div class="headline">Visão <span class="dim">por funil</span></div>
-    <div class="uline"></div>
-    <div class="csets">
-      <div class="cset"><div class="fmt">Topo · frio</div><div class="ang">{{TOPO_ANGULO}}</div><div class="body">{{TOPO_FORMATOS}}</div></div>
-      <div class="cset"><div class="fmt">Meio · morno</div><div class="ang">{{MEIO_ANGULO}}</div><div class="body">{{MEIO_FORMATOS}}</div></div>
-      <div class="cset"><div class="fmt">Fundo · quente</div><div class="ang">{{FUNDO_ANGULO}}</div><div class="body">{{FUNDO_FORMATOS}}</div></div>
-    </div>
-  </div>
-  <div class="horizon"><div class="run" style="width:{{W}}"></div></div>
-  <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>
-</div>
-
-<!-- 5+ SOLICITAÇÃO (DUPLICAR este slide, um por peça. Fundo precisa ter UGC + notícia.) -->
+<!-- SOLICITAÇÃO (DUPLICAR este slide, uma por peça: vídeo e estático usam o mesmo formato) -->
 <div class="slide">
   <div class="eyebrow">Criativos · {{CLIENTE_CURTO}}</div>
   <div class="wrap">
@@ -238,6 +237,7 @@
       <thead><tr><th>Arte</th><th>Texto</th><th>Imagem</th><th>Observações</th></tr></thead>
       <tbody>{{SOL_CENAS}}</tbody>
     </table>
+    {{SOL_ANEXO}}
   </div>
   <div class="horizon"><div class="run" style="width:{{W}}"></div></div>
   <div class="foot"><span class="mark">ARTTICO</span><span class="pageno">{{P}} / {{N}}</span></div>

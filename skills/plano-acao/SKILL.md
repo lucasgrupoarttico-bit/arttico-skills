@@ -90,11 +90,12 @@ Montar **somente** os blocos da(s) plataforma(s) aprovada(s).
 
 **Se Meta (só Meta ou ambos):**
 - **Objetivo de campanha** (ex: Leads / Conversões / Mensagens).
-- **Criativos por funil**:
-  - **Topo (consciência/descoberta)** — ângulos pra audiência fria.
-  - **Meio (consideração)** — prova, autoridade, comparação.
-  - **Fundo (conversão/remarketing)** — oferta, urgência, CTA direto.
-  - Pra cada criativo: formato sugerido, ângulo/conceito, copy principal (headline + texto) e CTA.
+- **Criativos por funil** — Topo (Reconhecimento) · Meio (Relacionamento) · Fundo (Remarketing).
+  **Padrão (não descrever copy no deck):** os criativos entram como **molduras 1080x1920 vazias**
+  pro cliente anexar as peças que já existem no perfil. No conteúdo em texto do Checkpoint 2, só
+  confirmar as **etapas do funil** e **quantas peças por etapa** (ex: 3 por etapa). Não escrever
+  headline/ângulo/CTA de cada peça, a menos que o cliente peça explicitamente. Ver o padrão
+  montado em `SKILL_FILES/referencia-meta.html`.
 
 **Sempre:**
 - **Funil do lead ao comercial**: o caminho completo do lead, da entrada (anúncio/LP/form/DM)
@@ -109,6 +110,26 @@ Depois do conteúdo aprovado, montar o **deck de slides 16:9** a partir de
 `SKILL_FILES/template-plano.html` (sistema "Disciplina Ártica"). É uma apresentação, não um
 documento A4.
 
+> **Padrão Meta (usar sempre que a plataforma incluir Meta):** o modelo de referência é
+> `SKILL_FILES/referencia-meta.html` (exemplo real: Garagem do Particular, 3 produtos). Vale
+> pra **1 produto ou vários**. Os criativos entram como **molduras 1080x1920**, nunca como
+> cards com copy. Dois modos:
+> - **Placeholder** (peças ainda não existem): molduras 9:16 vazias pro cliente anexar depois.
+> - **Thumb clicável pro Instagram** (peça já publicada): a moldura vira a arte real (frame de
+>   capa do vídeo + selo de play, ou a imagem direto) e um **link** que abre o post/Reels; a
+>   legenda vira "Ver no Instagram ↗". O PDF preserva o hyperlink como anotação clicável.
+>   Para gerar os thumbnails de vídeo (mp4/H.264), rodar `SKILL_FILES/extract-video-thumbs.js`
+>   (usa o Chrome/Edge do sistema, pois o Chromium do Playwright não decodifica H.264). As
+>   thumbs vão pra `clientes/<cliente>/plano-acao/assets/` e são referenciadas por caminho
+>   relativo; não apagar essa pasta.
+> - **1 produto:** uma seção de produto (avatar + slide de criativos com molduras); pode
+>   dispensar o divider numerado por produto e o slide de verba por produto.
+> - **Vários produtos:** um deck só, uma seção por produto (divider numerado + avatar +
+>   criativos), sem misturar avatares, + estratégia geral e distribuição de verba por produto.
+>
+> O cabeçalho do `referencia-meta.html` detalha a estrutura das molduras (`.ph-row` > `.ph-group`
+> > `.ph-frames` > `.ph-frame`) e como ajustar a quantidade de peças por etapa.
+
 **Sistema de design (não desviar):**
 - Fundo `#00002c`, cards `#0a0a3d`, **branco `#FFFFFF` é o único destaque**. Sem cor vibrante,
   sem gradiente colorido (regra do `marca/design-guide.md`).
@@ -122,8 +143,11 @@ documento A4.
 - Ambos → manter os dois e ajustar os números de Seção (Google = 03, Meta = 04).
 
 **Montagem:**
-- Slides repetíveis: duplicar o slide de criativo (um por etapa: Reconhecimento, Relacionamento,
-  Remarketing) e as linhas `<tr>` da tabela de palavras-chave.
+- **Criativos no Meta:** montar como o `referencia-meta.html` — um slide de criativos por produto,
+  com molduras `.ph-*` (Topo/Meio/Fundo, N molduras 1080x1920 por etapa). Não usar os cards
+  `.creative` com copy, a menos que o cliente peça.
+- Slides repetíveis: no Google, duplicar as linhas `<tr>` da tabela de palavras-chave. Em
+  multi-produto, duplicar a seção do produto (divider + avatar + criativos) por produto.
 - Tokens a substituir: `{{CLIENTE}}`, `{{CLIENTE_CURTO}}`, `{{PLATAFORMA}}`, `{{DATA}}`,
   `{{RESULTADOS_CURTO}}`/`{{RESULTADOS_MEDIO}}` (itens `<li>`), `{{ACESSOS}}` (`<li>`),
   `{{ESTRATEGIA}}` (parágrafos `.para` + `.duo` de `.kcard`),

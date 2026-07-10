@@ -1,0 +1,468 @@
+{
+  "exportFormatVersion": 2,
+  "containerVersion": {
+    "container": {
+      "name": "[WEB] Igor Flor",
+      "usageContext": [
+        "WEB"
+      ]
+    },
+    "variable": [
+      {
+        "name": "Event_id",
+        "type": "cvt_M63B8",
+        "parameter": []
+      },
+      {
+        "name": "GA4 | ID",
+        "type": "c",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "value",
+            "value": "G-XXXXXXXXXX"
+          }
+        ]
+      },
+      {
+        "name": "FB | Pixel",
+        "type": "c",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "value",
+            "value": "1234567890"
+          }
+        ]
+      }
+    ],
+    "trigger": [
+      {
+        "name": "PageView_lp",
+        "triggerId": "1",
+        "type": "DOM_READY",
+        "filter": [
+          {
+            "type": "CONTAINS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{Page Path}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "lp"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "click_whatsapp_lp",
+        "triggerId": "2",
+        "type": "LINK_CLICK",
+        "filter": [
+          {
+            "type": "CONTAINS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{Click URL}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "wa.me/5584991059889"
+              }
+            ]
+          },
+          {
+            "type": "CONTAINS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{Page Path}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "lp"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Lead_lp",
+        "triggerId": "3",
+        "type": "FORM_SUBMISSION",
+        "waitForTagsTimeout": {
+          "type": "TEMPLATE",
+          "value": "2000"
+        },
+        "filter": [
+          {
+            "type": "CONTAINS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{Form URL}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "lp"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "tag": [
+      {
+        "name": "00 | Tag do Google",
+        "type": "googtag",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "tagId",
+            "value": "{{GA4 | ID}}"
+          },
+          {
+            "type": "LIST",
+            "key": "configSettingsTable",
+            "list": [
+              {
+                "type": "MAP",
+                "map": [
+                  {
+                    "type": "TEMPLATE",
+                    "key": "parameter",
+                    "value": "send_page_view"
+                  },
+                  {
+                    "type": "TEMPLATE",
+                    "key": "parameterValue",
+                    "value": "true"
+                  }
+                ]
+              },
+              {
+                "type": "MAP",
+                "map": [
+                  {
+                    "type": "TEMPLATE",
+                    "key": "parameter",
+                    "value": "server_container_url"
+                  },
+                  {
+                    "type": "TEMPLATE",
+                    "key": "parameterValue",
+                    "value": "https://stape.igorflor.com"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "firingTriggerId": [
+          "2147479553"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT"
+      },
+      {
+        "name": "Microsoft Clarity - Official",
+        "type": "cvt_MQDKZ",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "projectId",
+            "value": "SEU_CLARITY_ID"
+          }
+        ],
+        "firingTriggerId": [
+          "2147479553"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT"
+      },
+      {
+        "name": "Vinculador de conversões",
+        "type": "gclidw",
+        "parameter": [
+          {
+            "type": "BOOLEAN",
+            "key": "enableCrossDomain",
+            "value": "true"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "enableUrlPassthrough",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "linkerDomains",
+            "value": "igorflor.com"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "enableCookieOverrides",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": [
+          "2147479553"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT"
+      },
+      {
+        "name": "01 | GA4 - page_view_lp",
+        "type": "gaawe",
+        "parameter": [
+          {
+            "type": "BOOLEAN",
+            "key": "sendEcommerceData",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "eventName",
+            "value": "PageView_lp"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "measurementIdOverride",
+            "value": "{{GA4 | ID}}"
+          },
+          {
+            "type": "LIST",
+            "key": "eventSettingsTable",
+            "list": [
+              {
+                "type": "MAP",
+                "map": [
+                  {
+                    "type": "TEMPLATE",
+                    "key": "parameter",
+                    "value": "event_id"
+                  },
+                  {
+                    "type": "TEMPLATE",
+                    "key": "parameterValue",
+                    "value": "{{Event_id}}"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "firingTriggerId": [
+          "1"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT"
+      },
+      {
+        "name": "01 | FB - PageView_lp",
+        "type": "cvt_5RM3Q",
+        "parameter": [
+          {
+            "type": "BOOLEAN",
+            "key": "disablePushState",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "pixelId",
+            "value": "{{FB | Pixel}}"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "trackType",
+            "value": "CUSTOM_EVENT_STR"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "customEventType",
+            "value": "PageView_lp"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "useSendBeacon",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": [
+          "1"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT"
+      },
+      {
+        "name": "02 | GA4 - click_whatsapp_lp",
+        "type": "gaawe",
+        "parameter": [
+          {
+            "type": "BOOLEAN",
+            "key": "sendEcommerceData",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "eventName",
+            "value": "click_whatsapp_lp"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "measurementIdOverride",
+            "value": "{{GA4 | ID}}"
+          },
+          {
+            "type": "LIST",
+            "key": "eventSettingsTable",
+            "list": [
+              {
+                "type": "MAP",
+                "map": [
+                  {
+                    "type": "TEMPLATE",
+                    "key": "parameter",
+                    "value": "event_id"
+                  },
+                  {
+                    "type": "TEMPLATE",
+                    "key": "parameterValue",
+                    "value": "{{Event_id}}"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "firingTriggerId": [
+          "2"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT"
+      },
+      {
+        "name": "02 | FB - click_whatsapp_lp",
+        "type": "cvt_5RM3Q",
+        "parameter": [
+          {
+            "type": "BOOLEAN",
+            "key": "disablePushState",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "pixelId",
+            "value": "{{FB | Pixel}}"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "trackType",
+            "value": "CUSTOM_EVENT_STR"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "customEventType",
+            "value": "click_whatsapp_lp"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "useSendBeacon",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": [
+          "2"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT"
+      },
+      {
+        "name": "02 | GA4 - Lead_lp",
+        "type": "gaawe",
+        "parameter": [
+          {
+            "type": "BOOLEAN",
+            "key": "sendEcommerceData",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "eventName",
+            "value": "Lead_lp"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "measurementIdOverride",
+            "value": "{{GA4 | ID}}"
+          },
+          {
+            "type": "LIST",
+            "key": "eventSettingsTable",
+            "list": [
+              {
+                "type": "MAP",
+                "map": [
+                  {
+                    "type": "TEMPLATE",
+                    "key": "parameter",
+                    "value": "event_id"
+                  },
+                  {
+                    "type": "TEMPLATE",
+                    "key": "parameterValue",
+                    "value": "{{Event_id}}"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "firingTriggerId": [
+          "3"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT"
+      },
+      {
+        "name": "02 | FB - Lead_lp",
+        "type": "cvt_5RM3Q",
+        "parameter": [
+          {
+            "type": "BOOLEAN",
+            "key": "disablePushState",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "pixelId",
+            "value": "{{FB | Pixel}}"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "trackType",
+            "value": "CUSTOM_EVENT_STR"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "customEventType",
+            "value": "Lead_lp"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "useSendBeacon",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": [
+          "3"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT"
+      }
+    ]
+  }
+}

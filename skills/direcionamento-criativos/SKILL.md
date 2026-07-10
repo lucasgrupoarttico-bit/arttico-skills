@@ -56,17 +56,29 @@ Apresentar assim e parar pra aprovação:
 ### 3. Montar o conteúdo (mostrar em texto antes do PDF)
 Com base em **dores + desejos do avatar + briefing**, montar e mostrar pro usuário:
 - **Avatar**: ficha (Idade, Perfil, Onde/Decisor, Momento) + dores e desejos.
-- **Visão por funil**: ângulo + formatos de cada etapa.
-  - **Topo** (frio): atrair pela dor/desejo, identificação e curiosidade. Não vende ainda.
-  - **Meio** (morno): prova, autoridade, mecanismo, quebra de objeção.
-  - **Fundo** (quente): oferta, urgência, CTA direto.
-- **Solicitações**: uma por peça, cada uma é um **roteiro cena a cena**. Distribuir pelas etapas
-  do funil. O fundo precisa ter UGC em vídeo + estático formato notícia (ver regras abaixo).
+- **Solicitações**: uma por peça, cada uma é um **roteiro cena a cena**. Marcar a etapa de funil
+  no pill da solicitação (ex: Topo, Fundo).
 
 Ajustar se o usuário pedir antes de gerar o PDF.
 
 ### 4. Montar o deck (formato oficial)
-Montar a partir de `SKILL_FILES/template-criativos.html` (folha vertical 1080x1528). Estrutura:
+Montar a partir de `SKILL_FILES/template-criativos.html` (folha vertical 1080x1528). **Identidade
+ARTTICO sempre** (Disciplina Ártica, navy #00002c), mesmo quando o cliente tem marca própria: o
+design-guide do cliente vale só pras peças/anexos, nunca pro deck.
+
+> **Modelo pronto (versão ideal):** `SKILL_FILES/referencia-direcionamento.html` (exemplo real:
+> Garagem do Particular, 11 solicitações). Deck enxuto: Capa, Briefing, Avatar, Solicitações e
+> Fechamento. Padrões que ele estabelece:
+> - **Estático é Solicitação** também, no mesmo formato de tabela (Arte | Texto | Imagem |
+>   Observações): 1 linha com headline + detalhes + CTA na coluna Texto.
+> - **Moldura de anexo abaixo do roteiro** nas solicitações que **têm referência** (o usuário
+>   indica quais): tanto vídeo (`.attach.v`) quanto estático (`.attach.s`) são **1080x1920**.
+>   Preencher o token `{{SOL_ANEXO}}` com a moldura; sem referência, deixar vazio. Quando a
+>   referência já existe (arquivo/link), a moldura vira a **thumb clicável** que redireciona ao link
+>   (vídeo: frame de capa + selo de play; imagem: a própria arte).
+> - **NÃO existe "Visão por funil" nem seções de "Copy" no deck.** Não incluir em hipótese nenhuma.
+
+Estrutura:
 
 1. **Capa.**
 2. **Briefing técnico** (ficha): `{{BRIEF_PECAS}}` (ex: "3 vídeos e 1 estático"),
@@ -76,9 +88,7 @@ Montar a partir de `SKILL_FILES/template-criativos.html` (folha vertical 1080x15
 3. **Avatar**: boneco line-art (persona) + ficha `{{AVATAR_FICHA}}` (linhas
    `<div class="pf"><span class="pk">Rótulo</span><span class="pv">Valor</span></div>`, ~4) e as
    listas `{{AVATAR_DORES}}`/`{{AVATAR_DESEJOS}}` (`<li>` de `ul.list`).
-4. **Visão por funil**: `{{TOPO_ANGULO}}`/`{{TOPO_FORMATOS}}`, `{{MEIO_ANGULO}}`/`{{MEIO_FORMATOS}}`,
-   `{{FUNDO_ANGULO}}`/`{{FUNDO_FORMATOS}}`.
-5. **Solicitações** — duplicar o slide de Solicitação, **um por peça**. Tokens por slide:
+4. **Solicitações** — duplicar o slide de Solicitação, **um por peça**. Tokens por slide:
    `{{SOL_TITULO}}` (ex: "Solicitação 01"), `{{SOL_ETAPA}}` (ex: "Fundo · UGC"), `{{SOL_FORMATO}}`
    (ex: "Story · 1080x1920"), `{{SOL_CENAS}}` (linhas `<tr>`). Cada cena:
    - **Arte** = número da cena.
@@ -87,9 +97,9 @@ Montar a partir de `SKILL_FILES/template-criativos.html` (folha vertical 1080x15
    - **Observações** = grafismo ("Lettering no R$ 79,90", "legenda na tela").
    Manter ~5 a 7 cenas por roteiro pra caber no slide. Se passar, dividir a Solicitação em 2
    slides com o mesmo cabeçalho.
-6. **Fechamento** (`{{FRASE_FINAL}}`).
+5. **Fechamento** (`{{FRASE_FINAL}}`).
 
-**Regras obrigatórias do FUNDO de funil** (entre as Solicitações precisa haver):
+**Formatos de apoio para o FUNDO** (usar quando fizer sentido, não são obrigatórios):
 - **UGC em vídeo** — roteiro cena a cena no padrão "E eu que...": **gancho na dor** →
   **conflito** (o que tentou e não funcionou) → **virada** (o mecanismo do produto) →
   **resultado** (transformação concreta) → **CTA** (ex: "clica no link da bio e vem fazer parte
@@ -134,6 +144,15 @@ Solicitação, trocar uma peça ou já está pronto pra produção (passar pro `
 `criativo-estatico` ou pra gravação).
 
 ---
+
+## Vídeo institucional (peça "quem somos")
+Quando o cliente pedir um **vídeo institucional / de apresentação da empresa** (e não peças de
+funil), usar o template `SKILL_FILES/roteiro-institucional-modelo.md`. É um roteiro clássico em
+**6 tempos** (gancho + definição da categoria → como funciona + dores → opções/diferenciais →
+produto complementar → localização → fechamento de marca), no mesmo formato de tabela
+Arte | Texto | Imagem | Observações. O arquivo traz a estrutura, um esqueleto com placeholders pra
+preencher por cliente e um exemplo real preenchido (Garagem do Particular). Salvar o roteiro final
+em `clientes/[cliente]/conteudo/roteiros/`.
 
 ## Observações
 - Calibrar copy, ângulos e oferta pelo nicho real do cliente e pela região (`Opera em`). Pra

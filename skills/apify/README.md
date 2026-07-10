@@ -22,10 +22,10 @@ Copy-Item .env.example .env
 
 ```powershell
 cd scripts
-python apify.py google-maps  --query "clinica de estetica em Recife" --max 60 --cliente "Clínica Exemplo"
+python apify.py google-maps  --query "clinica de estetica em Recife" --max 60 --cliente "Click Cirurgia"
 python apify.py instagram    --profile concorrente --type posts --limit 40
 python apify.py tiktok       --search "limpa fossa" --limit 30
-python apify.py facebook-ads --term "Marca Exemplo" --country BR --max 50
+python apify.py facebook-ads --term "Prime Gourmet" --country BR --max 50
 ```
 
 ## Saida

@@ -1,7 +1,7 @@
 ---
 name: criativo-estatico
 description: >
-  Cria criativos estáticos (PNG 1080x1920) para Arttico ou clientes.
+  Cria criativos estáticos (PNG nos três formatos: story 1080x1920, feed 1080x1440 e quadrado 1080x1080) para Arttico ou clientes.
   Dois modos: direcionamento (usuário envia briefing) ou pauta em alta (Claude pesquisa assuntos em alta no nicho).
   Lê o design guide da marca antes de gerar qualquer visual.
   Use quando o usuário disser "cria um criativo", "faz um criativo estático",
@@ -63,6 +63,8 @@ Ativado quando o usuário envia um briefing, texto, PDF ou direcionamento de cri
    > 6. **Tweet** — simula post do Twitter/X
    > 7. **Referência** — replicar layout de um anúncio enviado
    > 8. **Notícia** — parece matéria de portal: tarja NOVIDADE, manchete e foto embaixo
+   > 9. **Preço topo** — comparação COM × SEM (2x1): preços grandes no topo, foto do produto full-bleed embaixo
+   > 10. **Preço base** — foto do produto herói no centro, selos no topo e preços COM × SEM na base
    >
    > Se tiver imagem pra usar, já manda o arquivo ou coloca na pasta `marca/` e me diz o nome."
 
@@ -82,7 +84,7 @@ Ativado quando o usuário envia um briefing, texto, PDF ou direcionamento de cri
    - Arttico → salvar em `conteudo/criativos/arttico/[tema]/criativo.html`
    - Cliente → salvar em `clientes/[cliente]/conteudo/criativos/[tema]/criativo.html`
 
-6. Renderizar **sempre nos dois formatos**: story (1080×1920) e feed (1080×1440).
+6. Renderizar **sempre nos três formatos**: story (1080×1920), feed (1080×1440) e quadrado (1080×1080).
 
    **Story:**
    ```bash
@@ -102,6 +104,27 @@ Ativado quando o usuário envia um briefing, texto, PDF ou direcionamento de cri
    - Gradiente do overlay (Layout 2): aumentar cobertura para compensar canvas menor
      `rgba(0,0,0,0.82) 30%, rgba(0,0,0,0.06) 58%, transparent 74%`
 
+   **Quadrado:** gerar variante do HTML e renderizar:
+   ```bash
+   npx playwright screenshot --viewport-size=1080,1080 "file:///[caminho-absoluto]/criativo-square.html" "[mesmo-diretório]/criativo-square.png"
+   ```
+
+   **Ajustes do HTML para o formato quadrado (1080×1080):**
+   - `height` → `1080px`. É o canvas mais baixo: o texto tem que preencher sem sobrar
+     vão branco e sem estourar. Nunca deixar área vazia grande.
+   - **Layouts com foto full-bleed / foto de pessoa / split** (foto-fundo, notícia,
+     split-pessoa, referência): no quadrado a pilha "texto em cima, foto embaixo" não
+     cabe. Usar **foto ocupando o frame inteiro** (`position:absolute; inset:0; object-fit:cover`)
+     + **degradê escuro na base** (transparente no topo → ~0.95 no rodapé) + **copy em
+     branco** ancorada embaixo. Assim a pessoa aparece inteira e a copy preenche o vazio.
+     Se a foto for 1:1 e cortar o rosto, dar leve zoom/`object-position` pra enquadrar
+     rosto até a boca acima do degradê. Regras detalhadas em `scripts/design-noticia.md`.
+   - **Layouts sem foto de pessoa** (tweet, comparação, editorial, minimalista, dark,
+     preço): manter o layout, só reescalar. Headline ~82% do story, corpo ~85%, paddings
+     laterais ~52px e verticais ~46px. Centralizar verticalmente (`justify-content:center`)
+     pra não sobrar vão.
+   - Manter tarja/faixa/selo encostados nas bordas, sem cantos arredondados.
+
    **Converter feed PNG para JPG** (quando o cliente pede JPG):
    ```powershell
    Add-Type -AssemblyName System.Drawing
@@ -113,8 +136,8 @@ Ativado quando o usuário envia um briefing, texto, PDF ou direcionamento de cri
    $bmp.Dispose()
    ```
 
-7. Mostrar os dois PNGs gerados pro usuário e perguntar se quer ajuste.
-   - Se pedir ajuste: editar o HTML base e re-renderizar ambos
+7. Mostrar os três PNGs gerados pro usuário e perguntar se quer ajuste.
+   - Se pedir ajuste: editar o HTML base e re-renderizar os três
    - Se aprovar: confirmar onde foram salvos
 
 ---
@@ -434,6 +457,59 @@ body (flex-direction: column, bg: #FFFFFF, height: 1920px)
 
 ---
 
+### Layout 9 — Preço Topo
+
+Comparação de preço COM × SEM a marca (oferta 2x1): a headline "COM O [MARCA] ✕ SEM O [MARCA]", uma tarja dourada de contexto e os **dois preços em destaque no topo**, com a foto do produto full-bleed embaixo. Formato agressivo e direto. Ideal pra clube de desconto, cupom, 2x1, combo. Regras completas em `scripts/design-preco-topo.md`.
+
+**Estrutura:**
+```
+body (flex-direction: column, bg: cor primária escura da marca)
+  ├── .top (text-align: center)
+  │     ├── .brand-logo   ← logo da marca, ~88px, circular, centralizado
+  │     ├── .headline     ← "COM O [MARCA]" / "✕ SEM O [MARCA]" — Montserrat 800 ~84px, "✕" no acento
+  │     └── .subtarja     ← pílula na cor de acento (texto escuro): "na compra de dois [item] no [parceiro]"
+  ├── .prices (flex, gap ~22px)
+  │     ├── .col.com  → label branco + card fundo acento, preço ~82px escuro
+  │     └── .col.sem  → label branco + card claro #f4f2ee, preço ~82px escuro
+  ├── .photo (flex: 1)  ← foto do produto full-bleed + gradiente sutil topo/base
+  └── .footer          ← "*valores aproximados"
+```
+
+**Regras:**
+- Movido a dado real: parceiro + preço COM + preço SEM. Sempre citar o parceiro
+- Preços **exagerados** (queixa comum é ficarem pequenos): `.val` ~82px Montserrat 800
+- Acento em 3 pontos só: o "✕", a tarja e o card COM
+- Foto base64 via script Node; placeholder escuro se não houver foto
+- Sem travessões
+
+---
+
+### Layout 10 — Preço Base
+
+Mesma oferta 2x1, versão premium: **foto do produto herói no centro**, selos no topo ("EXCLUSIVIDADE ◆ ECONOMIA" com a logo diamante) e a comparação COM × SEM na base. Ideal quando a foto é forte e a marca é sóbria/high ticket. Regras completas em `scripts/design-preco-base.md`.
+
+**Estrutura:**
+```
+body (flex-direction: column, bg: cor primária escura da marca)
+  ├── .mini           ← "EXCLUSIVIDADE" · logo diamante · "ECONOMIA" (selos mutáveis)
+  ├── .head-block
+  │     ├── .headline ← "2 [ITEM] NO [PARCEIRO]" — Montserrat 800 ~78px, número no acento
+  │     └── .subline  ← pílula acento (texto escuro): "ECONOMIA CERTA DE R$X"
+  ├── .photo          ← foto herói (feed: flex:1 | story: altura fixa + objY 62%)
+  └── .prices (flex, base)
+        ├── .col.com  → "COM [MARCA]" (acento ~60px) + box contorno acento
+        └── .col.sem  → "SEM [MARCA]" (branco ~60px) + box contorno branco
+```
+
+**Regras:**
+- **Story ≠ feed:** no story **nunca** usar `flex: 1` na foto (estica e cria vão entre headline e preços). Usar altura fixa (~1040px) + `body { justify-content: center }` + `object-position: center 62%` pra focar o produto. No feed a foto pode ser `flex: 1`
+- Labels e preços **exagerados** (`.lbl` ~60px, `.box` ~56px)
+- Pílula de economia dourada destaca o gatilho principal
+- Foto base64 via script Node; placeholder escuro se não houver foto
+- Sem travessões
+
+---
+
 ## Padrões de CTA
 
 Referência rápida para escolher o estilo de botão conforme o layout:
@@ -460,12 +536,13 @@ Referência rápida para escolher o estilo de botão conforme o layout:
 
 ## Output final
 
-Sempre gerar os dois formatos:
+Sempre gerar os três formatos:
 
 | Arquivo | Formato | Dimensão | Uso |
 |---------|---------|----------|-----|
 | `criativo.html` + `criativo.png` | Story | 1080×1920 | Reels, Stories |
 | `criativo-feed.html` + `criativo-feed.png` | Feed | 1080×1440 | Feed Instagram |
+| `criativo-square.html` + `criativo-square.png` | Quadrado | 1080×1080 | Feed quadrado, Facebook |
 
 - **Arttico:** `conteudo/criativos/arttico/[tema]/`
 - **Cliente:** `clientes/[cliente]/conteudo/criativos/[tema]/`
@@ -475,9 +552,9 @@ Sempre gerar os dois formatos:
 ## Regras
 
 - Sempre confirmar headline + subtítulo + CTA + layout + imagem antes de gerar o HTML
-- **Sempre gerar os dois formatos: story (1080×1920) e feed (1080×1440)** — sem exceção
-- Sempre mostrar os dois PNGs gerados antes de encerrar
-- Se pedir ajuste, re-renderizar ambos os formatos
+- **Sempre gerar os três formatos: story (1080×1920), feed (1080×1440) e quadrado (1080×1080)** — sem exceção
+- Sempre mostrar os três PNGs gerados antes de encerrar
+- Se pedir ajuste, re-renderizar os três formatos
 - Se o usuário não informar para quem é o criativo, perguntar antes de qualquer coisa
 - Se for cliente e não tiver design guide, pedir antes de gerar
 - Uma pergunta por vez — não listar várias dúvidas de uma vez

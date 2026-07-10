@@ -23,8 +23,11 @@ de "propaganda" (sem CTA botão, sem selo de oferta, sem preço gritando).
 
 - **Story:** 1080×1920 (`criativo.html`)
 - **Feed:** 1080×1440 (`criativo-feed.html`)
+- **Quadrado:** 1080×1080 (`criativo-square.html`) — **muda o layout**, ver seção abaixo
 
-Layout vertical em blocos empilhados de cima pra baixo. Sem centralização vertical.
+No story e no feed, layout vertical em blocos empilhados de cima pra baixo, sem
+centralização vertical. No quadrado, a pilha não cabe: usar o layout de sobreposição
+descrito em "Formato quadrado (1080×1080)".
 
 ---
 
@@ -84,6 +87,52 @@ body (flex-direction: column, bg: #FFFFFF, height: 1920px)
 - Deve ter pessoas/contexto reais do serviço (equipe, atendimento, ambiente)
 - Se a marca tiver logo discreta, pode aparecer marca d'água no canto da foto
 - Embutir como base64 ou caminho absoluto `file:///` — nunca relativo
+
+---
+
+## Formato quadrado (1080×1080)
+
+No quadrado o canvas é baixo demais pra empilhar tarja + texto + foto sem cortar o
+rosto ou sobrar branco. Inverte-se a lógica: **a foto ocupa o frame inteiro** e a
+copy vai **por cima**, na base, sobre um **degradê escuro**. Vira uma capa de
+revista/portal — a foto aparece completa e a copy preenche o vazio.
+
+### Estrutura
+
+```
+body (position:relative, 1080×1080, bg escuro de fallback)
+  ├── .foto     ← position:absolute; inset:0 — foto full-frame, object-fit:cover
+  ├── .overlay  ← position:absolute; inset:0 — degradê transparente→escuro na base
+  ├── .tarja    ← faixa vermelha no topo (igual story/feed), z-index acima
+  └── .painel   ← ancorado embaixo (bottom:0): manchete + deck em BRANCO
+```
+
+### Regras específicas do quadrado
+
+- **Foto completa:** `object-fit:cover`, `object-position:center top`. Se a foto for
+  1:1 e o degradê cobrir o rosto, dar leve zoom (`height:~118-132%`) e ajustar
+  `object-position` (ex.: `center 34%`) pra enquadrar do topo da cabeça até a boca
+  acima do degradê. Nunca cortar o rosto na altura dos olhos.
+- **Degradê na base** (não é painel branco opaco — isso cobriria a foto):
+  ```css
+  background:linear-gradient(to bottom,
+    rgba(6,20,10,0) 34%,
+    rgba(6,20,10,0.45) 52%,
+    rgba(6,20,10,0.82) 70%,
+    rgba(6,20,10,0.95) 100%);
+  ```
+  Ajustar a cor-base do degradê ao fundo da foto (verde escuro pra fundo verde,
+  `rgba(0,0,0,...)` pra fundo neutro).
+- **Copy em branco**, ancorada na base, preenchendo a largura:
+  - manchete: `#FFFFFF`, 800, `text-shadow:0 2px 18px rgba(0,0,0,.55)`, `line-height:1.04`,
+    tamanho ~82% do story
+  - deck: `rgba(255,255,255,.92)`, `text-shadow:0 2px 14px rgba(0,0,0,.5)`
+  - padding: ~60px laterais e base
+- **Tarja** vermelha `#E11515` continua no topo, full-width, encostada na borda.
+- Preencher a base sem sobrar vão: a copy é grande e ancorada embaixo; quanto mais
+  longa a manchete, mais alto o degradê deve começar pra manter contraste.
+
+Referência de implementação testada: `clientes/mateus-medeiros/conteudo/criativos/tqb-noticia/gen-square.mjs`.
 
 ---
 

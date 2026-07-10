@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Auditoria Instagram — @arttico.br</title>
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --surface: #161616;
+      --surface2: #1e1e1e;
+      --border: #2a2a2a;
+      --accent: #4f8ef7;
+      --accent2: #7c3aed;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --red: #ef4444;
+      --text: #e5e5e5;
+      --muted: #888;
+      --white: #fff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    /* HEADER */
+    .header {
+      background: linear-gradient(135deg, #0f1b3d 0%, #1a0a2e 50%, #0d0d0d 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 56px 40px 48px;
+      text-align: center;
+    }
+    .header-badge {
+      display: inline-block;
+      background: rgba(79,142,247,0.12);
+      border: 1px solid rgba(79,142,247,0.3);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 999px;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+    .header h1 span { color: var(--accent); }
+    .header p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+    .header-meta {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 32px;
+      flex-wrap: wrap;
+    }
+    .meta-item {
+      text-align: center;
+    }
+    .meta-item .val {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .meta-item .lbl {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* LAYOUT */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 48px 32px;
+    }
+
+    /* SECTION */
+    .section {
+      margin-bottom: 64px;
+    }
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-number {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 800; color: #fff;
+      flex-shrink: 0;
+    }
+    .section-header h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .section-header p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* SUBSECTION */
+    .subsection {
+      margin-bottom: 40px;
+    }
+    .subsection h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .subsection h3::before {
+      content: '';
+      display: inline-block;
+      width: 4px; height: 18px;
+      background: linear-gradient(var(--accent), var(--accent2));
+      border-radius: 2px;
+    }
+
+    /* CARD */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .card p { color: var(--text); }
+
+    /* ALERT / HIGHLIGHT */
+    .alert {
+      background: rgba(79,142,247,0.08);
+      border: 1px solid rgba(79,142,247,0.25);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      color: var(--text);
+    }
+    .alert.warning {
+      background: rgba(234,179,8,0.08);
+      border-color: rgba(234,179,8,0.25);
+      border-left-color: var(--yellow);
+    }
+    .alert.danger {
+      background: rgba(239,68,68,0.08);
+      border-color: rgba(239,68,68,0.25);
+      border-left-color: var(--red);
+    }
+    .alert.success {
+      background: rgba(34,197,94,0.08);
+      border-color: rgba(34,197,94,0.25);
+      border-left-color: var(--green);
+    }
+
+    /* TABLE */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    thead tr {
+      background: var(--surface2);
+    }
+    th {
+      padding: 14px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+
+    /* BADGE */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-blue { background: rgba(79,142,247,0.15); color: var(--accent); }
+    .badge-green { background: rgba(34,197,94,0.15); color: var(--green); }
+    .badge-yellow { background: rgba(234,179,8,0.15); color: var(--yellow); }
+    .badge-red { background: rgba(239,68,68,0.15); color: var(--red); }
+    .badge-purple { background: rgba(124,58,237,0.15); color: #a78bfa; }
+
+    /* GRID */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 768px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .header h1 { font-size: 28px; }
+      .header-meta { gap: 20px; }
+    }
+
+    /* ICON CARD */
+    .icon-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .icon-card .icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .icon-card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+    .icon-card p {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* FUNNEL */
+    .funnel {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+    .funnel-step {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .funnel-step .f-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      min-width: 60px;
+    }
+    .funnel-step .f-content {
+      font-size: 13px;
+      color: var(--text);
+    }
+    .funnel-arrow {
+      text-align: center;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    /* QUICK WIN */
+    .qw-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+    .qw-num {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 15px; color: #fff;
+      flex-shrink: 0;
+    }
+    .qw-body h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+    .qw-body p {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* BIO VERSOES */
+    .bio-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 12px;
+    }
+    .bio-card .bio-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .bio-card pre {
+      font-family: inherit;
+      font-size: 14px;
+      white-space: pre-wrap;
+      color: var(--text);
+      line-height: 1.8;
+    }
+    .bio-card.recommended {
+      border-color: var(--accent);
+      background: rgba(79,142,247,0.05);
+    }
+    .recommended-tag {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.5px;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+
+    /* GANCHO */
+    .gancho-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .gancho-item strong { color: var(--white); }
+
+    /* KPI */
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 22px;
+      text-align: center;
+    }
+    .kpi-card .kpi-icon { font-size: 30px; margin-bottom: 8px; }
+    .kpi-card h4 { font-size: 15px; font-weight: 700; color: var(--white); margin-bottom: 6px; }
+    .kpi-card .kpi-desc { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+    .kpi-card .kpi-meta {
+      font-size: 12px;
+      background: rgba(34,197,94,0.1);
+      color: var(--green);
+      border-radius: 999px;
+      padding: 3px 12px;
+      display: inline-block;
+    }
+
+    /* FOOTER */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding: 32px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* PROGRESS BAR */
+    .pbar-wrap { margin-bottom: 12px; }
+    .pbar-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+    .pbar-label span:first-child { color: var(--text); }
+    .pbar-label span:last-child { color: var(--accent); font-weight: 700; }
+    .pbar {
+      height: 6px;
+      background: var(--surface2);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .pbar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 999px;
+    }
+
+    /* DIVIDER */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    ul.check-list {
+      list-style: none;
+      padding: 0;
+    }
+    ul.check-list li {
+      padding: 8px 0;
+      padding-left: 26px;
+      position: relative;
+      font-size: 14px;
+      color: var(--text);
+      border-bottom: 1px solid var(--border);
+    }
+    ul.check-list li:last-child { border-bottom: none; }
+    ul.check-list li::before {
+      content: '→';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-badge">Auditoria Social Media · Junho 2026</div>
+  <h1>@<span>arttico.br</span></h1>
+  <p>Diagnóstico completo + Estratégia de crescimento e monetização para os próximos 90 dias</p>
+  <div class="header-meta">
+    <div class="meta-item">
+      <div class="val">1.542</div>
+      <div class="lbl">Seguidores</div>
+    </div>
+    <div class="meta-item">
+      <div class="val">290</div>
+      <div class="lbl">Posts</div>
+    </div>
+    <div class="meta-item">
+      <div class="val">R$3MM+</div>
+      <div class="lbl">Investidos</div>
+    </div>
+    <div class="meta-item">
+      <div class="val">4</div>
+      <div class="lbl">Seguindo</div>
+    </div>
+    <div class="meta-item">
+      <div class="val">Crescimento</div>
+      <div class="lbl">Objetivo</div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ===================== ETAPA 1 ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div>
+        <h2>Diagnóstico</h2>
+        <p>Análise do estado atual do perfil — posicionamento, conteúdo, formatos e gaps</p>
+      </div>
+    </div>
+
+    <!-- Posicionamento -->
+    <div class="subsection">
+      <h3>Posicionamento atual percebido (primeiros 5 segundos)</h3>
+      <div class="alert warning">
+        <strong>Percepção atual:</strong> "Agência que investe dinheiro de outros em anúncios." A bio entrega uma promessa genérica, um social proof financeiro e um CTA direto. O handle confirma o segmento, mas não diferencia de centenas de outras agências. A foto de perfil é apenas o logotipo — sem rosto humano visível, o que reduz conexão imediata.
+      </div>
+      <div class="card">
+        <p><strong style="color:#fff">Resumo em 5 segundos:</strong> Agência de tráfego pago. Parece séria, mas não comunica <em>por que é diferente</em> das outras.</p>
+      </div>
+    </div>
+
+    <!-- Pilares -->
+    <div class="subsection">
+      <h3>Pilares de conteúdo identificados (maio/2026)</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Pilar</th>
+              <th>Posts</th>
+              <th>Distribuição</th>
+              <th>Problema</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Análise de campanhas de grandes marcas (Spotify, Nubank, Cimed)</td>
+              <td><span class="badge badge-blue">3 posts</span></td>
+              <td>
+                <div class="pbar-wrap" style="margin:0">
+                  <div class="pbar"><div class="pbar-fill" style="width:40%"></div></div>
+                </div>
+                40%
+              </td>
+              <td style="color:var(--yellow)">Menor conversão para PME</td>
+            </tr>
+            <tr>
+              <td>Cases de clientes (MK Burger, Faceponto)</td>
+              <td><span class="badge badge-green">2 posts</span></td>
+              <td>
+                <div class="pbar-wrap" style="margin:0">
+                  <div class="pbar"><div class="pbar-fill" style="width:20%"></div></div>
+                </div>
+                20%
+              </td>
+              <td style="color:var(--green)">Alto impacto — subutilizado</td>
+            </tr>
+            <tr>
+              <td>Estratégia de crescimento no Instagram</td>
+              <td><span class="badge badge-blue">1 reel</span></td>
+              <td>
+                <div class="pbar-wrap" style="margin:0">
+                  <div class="pbar"><div class="pbar-fill" style="width:15%"></div></div>
+                </div>
+                15%
+              </td>
+              <td style="color:var(--muted)">Atrai peers, não clientes</td>
+            </tr>
+            <tr>
+              <td>Google Meu Negócio / ferramentas</td>
+              <td><span class="badge badge-blue">1 reel</span></td>
+              <td>
+                <div class="pbar-wrap" style="margin:0">
+                  <div class="pbar"><div class="pbar-fill" style="width:10%"></div></div>
+                </div>
+                10%
+              </td>
+              <td style="color:var(--muted)">Útil, mas genérico</td>
+            </tr>
+            <tr>
+              <td>Conteúdo institucional / datas comemorativas</td>
+              <td><span class="badge badge-yellow">1 post</span></td>
+              <td>
+                <div class="pbar-wrap" style="margin:0">
+                  <div class="pbar"><div class="pbar-fill" style="width:10%"></div></div>
+                </div>
+                10%
+              </td>
+              <td style="color:var(--red)">Confunde posicionamento</td>
+            </tr>
+            <tr>
+              <td>Ferramentas novas (WhatsApp + IA)</td>
+              <td><span class="badge badge-purple">1 post</span></td>
+              <td>
+                <div class="pbar-wrap" style="margin:0">
+                  <div class="pbar"><div class="pbar-fill" style="width:5%"></div></div>
+                </div>
+                5%
+              </td>
+              <td style="color:var(--muted)">Boa direção, pouco explorado</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert danger">
+        <strong>Problema central:</strong> O pilar mais frequente (análise de grandes marcas) é o que tem menor conversão direta para o ICP da agência. O perfil fala muito de Spotify e Palmeiras, mas o cliente-alvo é o dono de restaurante ou clínica.
+      </div>
+    </div>
+
+    <!-- Formatos -->
+    <div class="subsection">
+      <h3>Formatos dominantes e performance</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Formato</th>
+              <th>Qtd. (maio)</th>
+              <th>Curtidas médias</th>
+              <th>Desempenho</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Reel em collab (@thiago.barretto)</td>
+              <td>1</td>
+              <td><strong style="color:var(--green)">73</strong></td>
+              <td><span class="badge badge-green">🔥 Melhor formato</span></td>
+            </tr>
+            <tr>
+              <td>Reel (conta própria)</td>
+              <td>2</td>
+              <td><strong style="color:var(--accent)">~15</strong></td>
+              <td><span class="badge badge-blue">Bom</span></td>
+            </tr>
+            <tr>
+              <td>Carrossel</td>
+              <td>3</td>
+              <td><strong style="color:var(--yellow)">~5</strong></td>
+              <td><span class="badge badge-yellow">Fraco</span></td>
+            </tr>
+            <tr>
+              <td>Post institucional (foto)</td>
+              <td>1</td>
+              <td><strong style="color:var(--red)">~3</strong></td>
+              <td><span class="badge badge-red">Muito fraco</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert success">
+        <strong>Insight:</strong> Reels performam de 3× a 15× melhor que carrosséis. O reel em collab teve 73 curtidas contra média de 5 nos carrosséis. A collab é o maior ativo subutilizado da conta.
+      </div>
+    </div>
+
+    <!-- Tom de voz -->
+    <div class="subsection">
+      <h3>Tom de voz e identidade visual</h3>
+      <div class="grid-2">
+        <div class="icon-card">
+          <div class="icon">✅</div>
+          <h4>Pontos fortes</h4>
+          <ul class="check-list">
+            <li>Linguagem analítica e madura — transmite autoridade técnica</li>
+            <li>Legendas bem escritas, raciocínio estruturado</li>
+            <li>Paleta escura e visual clean nos carrosséis tem coerência</li>
+          </ul>
+        </div>
+        <div class="icon-card">
+          <div class="icon">⚠️</div>
+          <h4>Ruídos identificados</h4>
+          <ul class="check-list">
+            <li>Tom excessivamente corporativo — falta calor humano e proximidade</li>
+            <li>Nenhum rosto aparece consistentemente associado à marca</li>
+            <li>Mistura de conteúdo educativo genérico com CTA direto sem funil de transição</li>
+            <li>Post de Dia das Mães com 2 logos (Arttico + Tastto) confunde o posicionamento</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Persona -->
+    <div class="subsection">
+      <h3>Persona / público-alvo real (quem está sendo atraído hoje)</h3>
+      <div class="alert warning">
+        <strong>Diagnóstico:</strong> Com base nos perfis que curtiram e comentaram, o público predominante atraído hoje são outros profissionais de marketing, sócios da própria equipe e parceiros — não o cliente final (empresário PME). Isso é sintoma de conteúdo voltado para pares, não para compradores.
+      </div>
+    </div>
+
+    <!-- Gaps -->
+    <div class="subsection">
+      <h3>Gaps críticos</h3>
+      <div class="qw-item">
+        <div class="qw-num">!</div>
+        <div class="qw-body">
+          <h4>Ausência de autoridade pessoal</h4>
+          <p>O sócio @thiago.barretto tem perfil pessoal que gera 10–40× mais engajamento que o perfil da agência. Não há estratégia de marca pessoal conectada à agência.</p>
+        </div>
+      </div>
+      <div class="qw-item">
+        <div class="qw-num">!</div>
+        <div class="qw-body">
+          <h4>Sem prova social sistematizada</h4>
+          <p>Apenas 2 cases fixados, sem números de resultado claros na maioria dos posts.</p>
+        </div>
+      </div>
+      <div class="qw-item">
+        <div class="qw-num">!</div>
+        <div class="qw-body">
+          <h4>CTA único e genérico</h4>
+          <p>"Agende uma reunião" aparece só na bio. Nenhum post tem funil intermediário (lead magnet, conteúdo de captura, oferta de entrada).</p>
+        </div>
+      </div>
+      <div class="qw-item">
+        <div class="qw-num">!</div>
+        <div class="qw-body">
+          <h4>Frequência baixa</h4>
+          <p>~5–6 posts em maio. Benchmark de crescimento no segmento: 4–5 posts/semana.</p>
+        </div>
+      </div>
+      <div class="qw-item">
+        <div class="qw-num">!</div>
+        <div class="qw-body">
+          <h4>Conteúdo não fala com a dor do cliente</h4>
+          <p>Todos os posts educam sobre o "como", mas poucos constroem o "por que agora" e o "por que a Arttico".</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ETAPA 2 ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div>
+        <h2>Público-alvo ideal (ICP)</h2>
+        <p>Ideal Customer Profile completo com demografia, psicografia, dores e objeções</p>
+      </div>
+    </div>
+
+    <!-- Demografico -->
+    <div class="subsection">
+      <h3>Perfil demográfico + psicográfico</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Atributo</th><th>Descrição</th></tr></thead>
+          <tbody>
+            <tr><td>Faixa etária</td><td>30–50 anos</td></tr>
+            <tr><td>Cargo / perfil</td><td>Dono de PME, sócio-fundador, gerente de marketing de empresa em crescimento</td></tr>
+            <tr><td>Segmentos</td><td>Alimentação (restaurantes, franquias), saúde/estética, varejo local, serviços B2B</td></tr>
+            <tr><td>Faturamento da empresa</td><td>R$ 30k–500k/mês</td></tr>
+            <tr><td>Maturidade digital</td><td>Médio — já usa redes sociais, talvez já tentou tráfego pago sem resultado</td></tr>
+            <tr><td>Comportamento</td><td>Decide por confiança e resultado demonstrado, não por preço</td></tr>
+            <tr><td>Localização</td><td>Predominantemente nordeste/norte (Natal-RN como hub), expansão nacional</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Dores / Desejos -->
+    <div class="subsection">
+      <h3>3 dores principais</h3>
+      <div class="grid-3">
+        <div class="icon-card">
+          <div class="icon">🔥</div>
+          <h4>Dor 1 — Dinheiro queimado</h4>
+          <p>"Invisto em anúncios mas não vejo resultado." Já teve experiências ruins com agências ou em modo solo e não sabe onde está o problema.</p>
+        </div>
+        <div class="icon-card">
+          <div class="icon">📉</div>
+          <h4>Dor 2 — Teto de escala</h4>
+          <p>"Quando aumento o investimento, o custo por lead explode." Chegou num teto e não consegue crescer de forma previsível.</p>
+        </div>
+        <div class="icon-card">
+          <div class="icon">😤</div>
+          <h4>Dor 3 — Desconfiança de mercado</h4>
+          <p>"O mercado de agências é cheio de promessas." Quer ver prova antes de contratar. Alta resistência inicial.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <h3>3 desejos / aspirações</h3>
+      <div class="grid-3">
+        <div class="icon-card">
+          <div class="icon">📊</div>
+          <h4>Previsibilidade</h4>
+          <p>Ter um fluxo constante de clientes novos sem depender de indicação ou sazonalidade.</p>
+        </div>
+        <div class="icon-card">
+          <div class="icon">🚀</div>
+          <h4>Escala sem dor de cabeça</h4>
+          <p>Crescer o faturamento sem precisar microgerenciar o marketing ou aprender a fazer ele mesmo.</p>
+        </div>
+        <div class="icon-card">
+          <div class="icon">🤝</div>
+          <h4>Parceiro de verdade</h4>
+          <p>Ter uma agência que entende o negócio dele, não um fornecedor que some após o contrato ser assinado.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Objeções -->
+    <div class="subsection">
+      <h3>Objeções comuns</h3>
+      <div class="card">
+        <ul class="check-list">
+          <li>"Já tentei agência antes e não funcionou."</li>
+          <li>"Não tenho budget suficiente para isso agora."</li>
+          <li>"Meu negócio é diferente, tráfego pago não serve para mim."</li>
+          <li>"Vou esperar o momento certo para investir."</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Onde consome -->
+    <div class="subsection">
+      <h3>Onde essa pessoa consome conteúdo hoje</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Tipo</th><th>Referências</th></tr></thead>
+          <tbody>
+            <tr><td>Perfis Instagram</td><td>@pedrosobral, @neilpatel_brasil, @joaopaulocurvello</td></tr>
+            <tr><td>Concorrentes diretos</td><td>V4 Company, Raccoon, Adtail (especialmente a V4 por ter forte presença educacional)</td></tr>
+            <tr><td>Podcasts / YouTube</td><td>Jornada do Empreendedor, canais de marketing de performance</td></tr>
+            <tr><td>Comunidades</td><td>Grupos de WhatsApp de associações comerciais locais, grupos de empresários</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ETAPA 3 ===================== -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div>
+        <h2>Estratégia personalizada — Próximos 90 dias</h2>
+        <p>Posicionamento, pilares, formatos, calendário, ganchos, funil e KPIs</p>
+      </div>
+    </div>
+
+    <!-- Novo posicionamento -->
+    <div class="subsection">
+      <h3>Novo posicionamento sugerido</h3>
+      <div class="alert">
+        <strong>Conceito central:</strong> Deixar de ser "agência que faz tráfego" e passar a ser <strong>"parceiro de crescimento previsível para PMEs"</strong> — com ênfase em resultado mensurável e método próprio.
+      </div>
+    </div>
+
+    <!-- Bios -->
+    <div class="subsection">
+      <h3>Nova bio — 3 versões</h3>
+
+      <div class="bio-card">
+        <div class="bio-label">Versão 1 — Foco em resultado + método</div>
+        <pre>📈 Tráfego pago que transforma clique em cliente
+Método próprio | +R$3MM gerenciados
+✅ Cases reais. Resultados mensuráveis.
+👇 Fale com um especialista</pre>
+      </div>
+
+      <div class="bio-card recommended">
+        <div class="bio-label">Versão 2 — Foco em dor + diferencial <span class="recommended-tag">★ RECOMENDADA</span></div>
+        <pre>Cansado de queimar verba em anúncio sem retorno?
+🎯 A Arttico transforma investimento em crescimento previsível
++50 empresas atendidas | Google Partner
+👇 Diagnóstico gratuito</pre>
+      </div>
+
+      <div class="bio-card">
+        <div class="bio-label">Versão 3 — Foco em autoridade + nicho</div>
+        <pre>Performance digital para negócios que querem escalar
+📊 Tráfego pago | Meta Ads | Google Ads
+💎 +R$3MM investidos com resultado
+👇 Agende seu diagnóstico gratuito</pre>
+      </div>
+      <div class="alert">
+        <strong>Por que a V2?</strong> A virada de "investimos dinheiro" para "resolvemos um problema real" gera identificação imediata no ICP. O gatilho de dor ("cansado de queimar verba") + prova social + CTA de baixo risco (diagnóstico gratuito) reduz a barreira de entrada.
+      </div>
+    </div>
+
+    <!-- Pilares -->
+    <div class="subsection">
+      <h3>5

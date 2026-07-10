@@ -1,0 +1,509 @@
+{
+  "exportFormatVersion": 2,
+  "containerVersion": {
+    "container": {
+      "name": "[STAPE] Igor Flor",
+      "usageContext": [
+        "SERVER"
+      ]
+    },
+    "variable": [
+      {
+        "name": "GA4 | ID",
+        "type": "c",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "value",
+            "value": "G-XXXXXXXXXX"
+          }
+        ]
+      },
+      {
+        "name": "FB | Pixel",
+        "type": "c",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "value",
+            "value": "1234567890"
+          }
+        ]
+      },
+      {
+        "name": "FB | Token",
+        "type": "c",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "value",
+            "value": "EAAXXXXXXXXXXXXXXX"
+          }
+        ]
+      }
+    ],
+    "trigger": [
+      {
+        "name": "GA4 | Todos os Eventos",
+        "triggerId": "1",
+        "type": "ALWAYS",
+        "filter": [
+          {
+            "type": "MATCH_REGEX",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{Event Name}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": ".+"
+              }
+            ]
+          },
+          {
+            "type": "CONTAINS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{Client Name}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "GA4"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "PageView_lp",
+        "triggerId": "2",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "PageView_lp"
+              }
+            ]
+          }
+        ],
+        "filter": [
+          {
+            "type": "CONTAINS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{Client Name}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "GA4"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "click_whatsapp_lp",
+        "triggerId": "3",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "click_whatsapp_lp"
+              }
+            ]
+          }
+        ],
+        "filter": [
+          {
+            "type": "CONTAINS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{Client Name}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "GA4"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Lead_lp",
+        "triggerId": "4",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "Lead_lp"
+              }
+            ]
+          }
+        ],
+        "filter": [
+          {
+            "type": "CONTAINS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{Client Name}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "GA4"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "tag": [
+      {
+        "name": "GA4 | Todos os Eventos",
+        "type": "sgtmgaaw",
+        "parameter": [
+          {
+            "type": "BOOLEAN",
+            "key": "redactVisitorIp",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "epToIncludeDropdown",
+            "value": "all"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "upToIncludeDropdown",
+            "value": "all"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "measurementId",
+            "value": "{{GA4 | ID}}"
+          }
+        ],
+        "firingTriggerId": [
+          "1"
+        ],
+        "blockingTriggerId": [
+          "2",
+          "3",
+          "4"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT"
+      },
+      {
+        "name": "01 | FB - PageView_lp",
+        "type": "cvt_5TP8W",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "logType",
+            "value": "debug"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "adStorageConsent",
+            "value": "optional"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "eventNameCustom",
+            "value": "PageView_lp"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "generateFbp",
+            "value": "true"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "overrideCookieDomain",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "accessToken",
+            "value": "{{FB | Token}}"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "useAppSecretProof",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "inheritEventName",
+            "value": "override"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "actionSource",
+            "value": "website"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "pixelId",
+            "value": "{{FB | Pixel}}"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "useHttpOnlyCookie",
+            "value": "false"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "useOptimisticScenario",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "bigQueryLogType",
+            "value": "no"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "eventName",
+            "value": "custom"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "enableMultipixelSetup",
+            "value": "false"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "enableEventEnhancement",
+            "value": "true"
+          }
+        ],
+        "firingTriggerId": [
+          "2"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT"
+      },
+      {
+        "name": "02 | FB - click_whatsapp_lp",
+        "type": "cvt_5TP8W",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "logType",
+            "value": "debug"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "adStorageConsent",
+            "value": "optional"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "eventNameCustom",
+            "value": "click_whatsapp_lp"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "generateFbp",
+            "value": "true"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "overrideCookieDomain",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "accessToken",
+            "value": "{{FB | Token}}"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "useAppSecretProof",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "inheritEventName",
+            "value": "override"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "actionSource",
+            "value": "website"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "pixelId",
+            "value": "{{FB | Pixel}}"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "useHttpOnlyCookie",
+            "value": "false"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "useOptimisticScenario",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "bigQueryLogType",
+            "value": "no"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "eventName",
+            "value": "custom"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "enableMultipixelSetup",
+            "value": "false"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "enableEventEnhancement",
+            "value": "true"
+          }
+        ],
+        "firingTriggerId": [
+          "3"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT"
+      },
+      {
+        "name": "02 | FB - Lead_lp",
+        "type": "cvt_5TP8W",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "logType",
+            "value": "debug"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "adStorageConsent",
+            "value": "optional"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "eventNameCustom",
+            "value": "Lead_lp"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "generateFbp",
+            "value": "true"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "overrideCookieDomain",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "accessToken",
+            "value": "{{FB | Token}}"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "useAppSecretProof",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "inheritEventName",
+            "value": "override"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "actionSource",
+            "value": "website"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "pixelId",
+            "value": "{{FB | Pixel}}"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "useHttpOnlyCookie",
+            "value": "false"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "useOptimisticScenario",
+            "value": "false"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "bigQueryLogType",
+            "value": "no"
+          },
+          {
+            "type": "TEMPLATE",
+            "key": "eventName",
+            "value": "custom"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "enableMultipixelSetup",
+            "value": "false"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "enableEventEnhancement",
+            "value": "true"
+          }
+        ],
+        "firingTriggerId": [
+          "4"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT"
+      }
+    ]
+  }
+}

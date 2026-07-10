@@ -114,7 +114,7 @@ Salvar em:
 ccos-ratos/clientes/{slug-cliente}/relatorios/pagespeed_{YYYY-MM-DD}.html
 ```
 
-Onde `slug-cliente` é o nome do cliente em kebab-case (ex: `consultoria-exemplo`).
+Onde `slug-cliente` é o nome do cliente em kebab-case (ex: `segantini-consultoria`).
 
 Se o diretório não existir, criar antes de salvar.
 

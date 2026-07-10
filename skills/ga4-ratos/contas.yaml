@@ -6,10 +6,22 @@
 #   property_id: "123456789"
 #   site: "exemplo.com.br"
 
-clientes: []
+clientes:
 
-  # -- Seus clientes abaixo --
-  #
-  # - nome: Meu Cliente
-  #   property_id: "123456789"
-  #   site: "exemplo.com.br"
+  # -- Teus clientes abaixo --
+
+  - nome: Ratos de IA
+    property_id: "528559546"
+    site: "ratosdeia.com.br"
+
+  - nome: Geoengenharia
+    property_id: "13383403311"
+    site: ""
+
+  - nome: Click Cirurgia
+    property_id: "403108232"
+    site: ""
+
+  - nome: Igor Flor
+    property_id: "515030046"
+    site: ""
