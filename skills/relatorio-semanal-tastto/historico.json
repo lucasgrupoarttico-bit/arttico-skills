@@ -1,0 +1,82 @@
+{
+  "conta": "act_2751474615165051",
+  "nome_conta": "CA - Reserva",
+  "cadencia": "quinta-a-quarta (D-7 a D-1), a partir de 06/08/2026",
+  "cadencia_anterior": "segunda-a-domingo (Semanas 1 a 7, ate 02/08/2026)",
+  "observacao": "Semanas 1 a 6 extraidas dos relatorios do repo Piv-09/tastto-mkt-interno e escritas retroativamente em 31/07/2026. A Semana 7 foi puxada da API em 05/08 e substituiu o registro parcial de 27-31/07. A partir de 06/08 a serie roda toda quinta cobrindo os 7 dias fechados ate a vespera, o que gera uma sobreposicao unica de 4 dias (30/07 a 02/08) com a Semana 7. Acumulados da serie devem subtrair os dias sobrepostos.",
+  "semanas": [
+    {
+      "n": 1, "inicio": "2026-06-15", "fim": "2026-06-21", "dias": 7, "parcial": false,
+      "origem": "retroativo",
+      "tof": { "gasto": 133.59, "resultado": 509, "custo": 0.26, "ctr": 1.82 },
+      "mof": { "gasto": 105.80, "resultado": 224, "custo": 0.47, "ctr": 2.81 },
+      "bof": { "gasto": 0.00, "resultado": 0, "custo": null, "ctr": null },
+      "total_gasto": 239.39, "leads": 0,
+      "nota": "Setup da campanha. BoF sem investimento relevante."
+    },
+    {
+      "n": 2, "inicio": "2026-06-22", "fim": "2026-06-28", "dias": 7, "parcial": false,
+      "origem": "retroativo",
+      "tof": { "gasto": 138.74, "resultado": 520, "custo": 0.27, "ctr": 1.59 },
+      "mof": { "gasto": 110.99, "resultado": 293, "custo": 0.38, "ctr": 4.31 },
+      "bof": { "gasto": 93.06, "resultado": 1, "custo": 93.06, "ctr": 2.87 },
+      "total_gasto": 342.79, "leads": 1,
+      "nota": "Primeiro lead, via LP externa (rota cara, depois descontinuada)."
+    },
+    {
+      "n": 3, "inicio": "2026-06-29", "fim": "2026-07-05", "dias": 7, "parcial": false,
+      "origem": "retroativo",
+      "tof": { "gasto": 139.57, "resultado": 537, "custo": 0.26, "ctr": 1.42 },
+      "mof": { "gasto": 114.02, "resultado": 284, "custo": 0.40, "ctr": 3.79 },
+      "bof": { "gasto": 122.10, "resultado": 4, "custo": 30.53, "ctr": 2.37 },
+      "total_gasto": 375.69, "leads": 4,
+      "nota": "Formulario nativo se mostra melhor que LP externa."
+    },
+    {
+      "n": 4, "inicio": "2026-07-06", "fim": "2026-07-12", "dias": 7, "parcial": false,
+      "origem": "retroativo",
+      "tof": { "gasto": 138.47, "resultado": 451, "custo": 0.31, "ctr": 1.15 },
+      "mof": { "gasto": 109.30, "resultado": 326, "custo": 0.34, "ctr": 5.18 },
+      "bof": { "gasto": 106.83, "resultado": 6, "custo": 17.81, "ctr": 1.96 },
+      "total_gasto": 354.60, "leads": 6,
+      "nota": "Melhor CPL da serie. Fadiga visivel nos criativos antigos do ToF."
+    },
+    {
+      "n": 5, "inicio": "2026-07-13", "fim": "2026-07-19", "dias": 7, "parcial": false,
+      "origem": "retroativo",
+      "tof": { "gasto": 142.46, "resultado": 501, "custo": 0.28, "ctr": 1.13 },
+      "mof": { "gasto": 111.73, "resultado": 344, "custo": 0.32, "ctr": 4.14 },
+      "bof": { "gasto": 113.99, "resultado": 5, "custo": 22.80, "ctr": 1.76 },
+      "total_gasto": 368.18, "leads": 5,
+      "nota": "Ultima semana antes da virada de criativos do ToF."
+    },
+    {
+      "n": 6, "inicio": "2026-07-20", "fim": "2026-07-26", "dias": 7, "parcial": false,
+      "origem": "retroativo",
+      "tof": { "gasto": 137.79, "resultado": 470, "custo": 0.29, "ctr": 1.18 },
+      "mof": { "gasto": 108.50, "resultado": 337, "custo": 0.32, "ctr": 6.77 },
+      "bof": { "gasto": 128.91, "resultado": 5, "custo": 25.78, "ctr": 1.81 },
+      "total_gasto": 375.20, "leads": 5,
+      "nota": "Virada de criativos: AD 05 assume o ToF, AD 08 Case Casa Moscou estreia no MoF."
+    },
+    {
+      "n": 7, "inicio": "2026-07-27", "fim": "2026-08-02", "dias": 7, "parcial": false,
+      "origem": "api",
+      "tof": { "gasto": 115.15, "resultado": 385, "custo": 0.30, "ctr": 1.25 },
+      "mof": { "gasto": 37.42, "resultado": 88, "custo": 0.43, "ctr": 6.61 },
+      "bof": { "gasto": 48.73, "resultado": 1, "custo": 48.73, "ctr": 2.73 },
+      "total_gasto": 201.30, "leads": 1,
+      "gasto_diario": 28.76,
+      "nota": "Semana cheia puxada da API em 05/08. Substitui o registro parcial de 27-31/07, que foi fechado com o dia 31/07 em curso e subestimava o ToF em R$6,30 e 23 visitas. MoF e BoF nao entregaram nada de 30/07 a 02/08: conjunto FORMS NATIVO 3 pausado e conjuntos de PAGE VIEW ativos mas sem entrega. Substituto [LFP][FORM NATIVO] criado so em 04/08.",
+      "entrega_por_dia": {
+        "2026-07-27": { "tof": 18.34, "mof": 18.61, "bof": 21.79 },
+        "2026-07-28": { "tof": 16.58, "mof": 14.00, "bof": 18.47 },
+        "2026-07-29": { "tof": 14.07, "mof": 4.81, "bof": 8.47 },
+        "2026-07-30": { "tof": 17.18, "mof": 0.00, "bof": 0.00 },
+        "2026-07-31": { "tof": 14.24, "mof": 0.00, "bof": 0.00 },
+        "2026-08-01": { "tof": 16.05, "mof": 0.00, "bof": 0.00 },
+        "2026-08-02": { "tof": 18.69, "mof": 0.00, "bof": 0.00 }
+      }
+    }
+  ]
+}

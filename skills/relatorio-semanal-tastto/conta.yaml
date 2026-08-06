@@ -1,0 +1,150 @@
+# ============================================================================
+# Relatório Semanal Tastto — Configuração da conta
+# ============================================================================
+
+cliente:
+  nome: "Tastto"
+  nicho: "saas-food-service"        # pra benchmarks (ads-ratos/references/benchmarks-br.md)
+  moeda: "BRL"
+  responsavel: "Lucas Felipe | Analista de Tráfego — Tastto"
+
+meta:
+  conta_anuncio: "act_2751474615165051"
+  nome_conta: "CA - Reserva"
+
+# ----------------------------------------------------------------------------
+# Metas (fonte: mensal-julho-2026.md do repo Piv-09/tastto-mkt-interno)
+# ----------------------------------------------------------------------------
+metas:
+  cpl_bof: 25.00          # R$ — meta oficial, medida sobre gasto de BoF
+  ctr_tof_min: 1.0        # %
+  ctr_mof_min: 3.0        # %
+  cpr_tof_max: 0.40       # R$ por visita ao perfil
+
+  # Meta derivada, não oficial. Existe pra manter o CPL full-funnel visível.
+  # Se a intenção é 25 no BoF e o BoF é ~32% da verba, o full-funnel equivalente
+  # fica perto de 78. Ajustar com o cliente quando for formalizado.
+  cpl_full_funnel_referencia: 78.00
+
+# ----------------------------------------------------------------------------
+# Classificação de etapa
+# ----------------------------------------------------------------------------
+# Resolução, em ordem:
+#   1. campanha_ids  — casamento exato por ID (mais confiável, imune a emoji e
+#      renomeação). Manter atualizado quando entrar campanha nova.
+#   2. padroes       — regex sobre campanha, depois conjunto, depois ad.
+#      Case-insensitive. Primeira etapa que casar vence.
+#
+# O bloco `resultado` diz o que conta como "Resultado" na tabela. Dois tipos:
+#   - tipo: acao   → soma o action_type dentro da lista `actions`
+#   - tipo: campo  → lê um campo de topo da linha de insight
+# Os valores abaixo foram confirmados na API em 05/08/2026 (campo `results.indicator`
+# que o Ads Manager usa na coluna Resultados).
+# ----------------------------------------------------------------------------
+etapas:
+  ToF:
+    rotulo: "ToF — Visitas ao perfil"
+    cor: "#6C6CFF"
+    campanha_ids:
+      - "120247493630180465"   # 🔵 [PIV][TRF][IG THIAGO][ABO] - Visitas ao perfil [ONG] - NRA
+    padroes:
+      - "\\bto[fp]\\b"
+      - "topo"
+      - "perfil"
+      - "visita.*perfil"
+    resultado:
+      tipo: "campo"
+      valor: "total_profile_visits"
+    resultado_rotulo: "visitas"
+
+  MoF:
+    rotulo: "MoF — Visitas à LP"
+    cor: "#E8631F"
+    campanha_ids:
+      - "120247498267530465"   # 🟡 [PIV][TRF][LP TASTTO][ABO] - Visitas a LP [ONG] - NRA
+    padroes:
+      - "\\bmof\\b"
+      - "meio"
+      - "\\blp\\b"
+      - "landing"
+    resultado:
+      tipo: "acao"
+      valor: "omni_landing_page_view"
+      alternativas: ["landing_page_view"]
+    resultado_rotulo: "visitas LP"
+
+  BoF:
+    rotulo: "BoF — Formulário"
+    cor: "#00A392"
+    campanha_ids:
+      - "120247990441480465"   # 🟡🔴 [PIV][LEADS][FORMS][ABO] - Teste formulários [ONG]
+    padroes:
+      - "\\bbof\\b"
+      - "fundo"
+      - "form"
+      - "lead"
+    resultado:
+      tipo: "acao"
+      valor: "lead"
+      alternativas: ["leadgen.other", "onsite_conversion.lead_grouped"]
+    resultado_rotulo: "leads"
+
+# ----------------------------------------------------------------------------
+# Status colors (reservadas — nunca usar como cor de série)
+# ----------------------------------------------------------------------------
+status_cores:
+  bom: "#2FBF71"
+  atencao: "#F2B01E"
+  critico: "#F2415A"
+
+# ----------------------------------------------------------------------------
+# Saída
+# ----------------------------------------------------------------------------
+saida:
+  pasta_relatorios: "clientes/tastto/trafego/relatorios"
+  repo_publicacao: "Piv-09/tastto-mkt-interno"
+  caminho_no_repo: "trafego/relatorios"
+
+# ----------------------------------------------------------------------------
+# Cadência
+# ----------------------------------------------------------------------------
+# Roda toda quinta, cobrindo os 7 dias fechados que terminam na véspera.
+# Gerando em 06/08 (quinta) → janela 30/07 a 05/08 (quinta a quarta).
+#
+# A janela termina em D-1 de propósito: nenhum dia entra com o dia ainda em
+# curso. Foi esse o erro do relatório parcial de 31/07.
+#
+# Até a Semana 7 a série era segunda a domingo. A troca acontece a partir de
+# 06/08 e gera uma sobreposição única de 4 dias (30/07 a 02/08) com a S7.
+# ----------------------------------------------------------------------------
+cadencia:
+  dia_geracao: "quinta"
+  janela: "D-7 a D-1"
+  ciclo: "quinta-a-quarta"
+  cadencia_anterior: "segunda-a-domingo (Semanas 1 a 7, até 02/08/2026)"
+
+# ----------------------------------------------------------------------------
+# Notificação (Passo 9)
+# ----------------------------------------------------------------------------
+# DM direta com a Maria Eduarda, identificada em 05/08/2026 pelo histórico da
+# conversa (clickup_get_chat_channel_messages).
+#
+# NÃO usar `clickup_find_member_by_name` pra resolver o destino: essa busca depende
+# de `clickup_get_workspace_members`, que vem vazio nesta conexão. O chat funciona,
+# a listagem de membros não. Por isso os IDs ficam fixos aqui.
+# ----------------------------------------------------------------------------
+notificacao:
+  clickup:
+    ativo: true
+    destinatario: "Maria Eduarda Girão Estefan"
+    channel_id: "139x4n-77393"    # DM
+    user_id: "112045691"          # Maria Eduarda
+    remetente_id: "100156957"     # Lucas, dono da conexão
+
+    # A comparação com o Go High Level é feita PELA Maria Eduarda, não pela skill.
+    # A mensagem pede a checagem; a skill não acessa o CRM.
+    pedir_comparativo_crm: true
+    crm: "Go High Level"
+
+    # Canal alternativo, caso um dia o aviso passe a ser público:
+    # 139x4n-57673  [A] - Relatório de Tráfego

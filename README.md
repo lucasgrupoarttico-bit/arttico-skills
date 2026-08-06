@@ -42,6 +42,9 @@ Cada skill traz um `SKILL.md` com as instruções e, quando precisa de credencia
 | `frontend-design` | Direção de design visual para novas interfaces |
 | `awesome-design-md` | Aplica um DESIGN.md de marcas reais (Stripe, Notion, Apple…) na geração de UI |
 | `find-skills` | Ajuda a descobrir e instalar novas skills |
+| `criar-app` | Cria um app/SaaS do zero: entrevista, plano de ação, banco, telas e deploy |
+| `otimizar-ads` | Varre as contas de todos os clientes e entrega plano de otimização para aprovação |
+| `relatorio-semanal-tastto` | Relatório semanal de tráfego pago no formato da série histórica do cliente |
 
 ## Aviso
 

@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tastto — Relatório de Tráfego, Semana {{SEMANA_N}}</title>
+<!--
+  ==========================================================================
+  RELATÓRIO SEMANAL TASTTO — template
+  ==========================================================================
+  Placeholders que o Claude substitui:
+
+    {{SEMANA_N}}        número da semana (ex: 8)
+    {{PERIODO}}         "27/07 a 02/08/2026"
+    {{GERADO_EM}}       "05/08/2026"
+    {{CONTA}}           "CA - Reserva · act_2751474615165051"
+    {{AVISO_PARCIAL}}   <div class="aviso">…</div> ou string vazia
+    {{KPI_CARDS}}       cards de KPI (ver molde abaixo)
+    {{TABELA_FUNIL}}    <tr>…</tr> das etapas + total
+    {{ENTREGA_POR_DIA}} SEÇÃO CONDICIONAL — <section> com a tabela de gasto por dia.
+                        Só quando o check A8 acusar dia zerado. Senão, string vazia.
+                        Marcar as células zeradas com class="zero"
+    {{AUDITORIA}}       <tr>…</tr> dos checks que não passaram, FAIL primeiro
+    {{RESUMO_CHECKS}}   "5 de 7 checks OK"
+    {{CRIATIVOS}}       blocos .criativo-etapa por etapa
+    {{PROXIMOS_PASSOS}} <li>…</li>
+    {{INSIGHT}}         1 a 3 frases
+    {{RESPONSAVEL}}     do conta.yaml
+    {{DADOS_JSON}}      JSON: { metas:{cpl_bof}, semanas:[ {n,fim,parcial,cpl_bof,
+                        tof:{ctr},mof:{ctr},bof:{ctr}} ] }  → alimenta os gráficos
+
+  CORES — não alterar sem revalidar com dataviz/scripts/validate_palette.js.
+  O trio de etapas passa nos seis checks em claro e escuro (pior par adjacente
+  ΔE 14.9 protan). Laranja/âmbar/verde/vermelho de status são reservados e só
+  aparecem com ícone + rótulo, nunca como cor de série.
+  ==========================================================================
+-->
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  /* Design guide Tastto */
+  --azul-profundo:#1A1A2D;
+  --azul-eletrico:#6C6CFF;
+  --lavanda:#B0AFFF;
+  --cinza-azulado:#D6E1EA;
+  --laranja:#F96A2B;
+
+  /* Superfícies derivadas */
+  --bg:#1A1A2D;
+  --surface:#22223B;
+  --surface-2:#2A2A47;
+  --linha:#33334F;
+
+  /* Tinta */
+  --ink:#EEF2F7;
+  --ink-2:#D6E1EA;
+  --ink-3:#8E92B0;
+
+  /* Séries — identidade de etapa (validado CVD) */
+  --tof:#6C6CFF;
+  --mof:#E8631F;
+  --bof:#00A392;
+
+  /* Status — reservado, sempre com ícone + rótulo */
+  --bom:#2FBF71;
+  --atencao:#F2B01E;
+  --critico:#F2415A;
+
+  --r:14px;
+  --fonte:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --mono:'SF Mono',ui-monospace,'Cascadia Mono','Roboto Mono',monospace;
+}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--fonte);
+  font-size:15px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  padding:0 20px 72px;
+}
+.wrap{max-width:1080px;margin:0 auto}
+
+/* ---------- cabeçalho ---------- */
+header{
+  padding:52px 0 34px;
+  border-bottom:1px solid var(--linha);
+  margin-bottom:34px;
+}
+.marca{
+  display:inline-flex;align-items:center;gap:9px;
+  font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--lavanda);margin-bottom:20px;
+}
+.marca::before{
+  content:"";width:9px;height:9px;border-radius:2px;
+  background:linear-gradient(135deg,var(--azul-eletrico),var(--lavanda));
+}
+h1{font-size:clamp(26px,4vw,38px);font-weight:700;letter-spacing:-.022em;line-height:1.15}
+h1 .sem{color:var(--azul-eletrico)}
+.meta-head{
+  display:flex;flex-wrap:wrap;gap:8px 26px;
+  margin-top:14px;color:var(--ink-3);font-size:13.5px;
+}
+.meta-head b{color:var(--ink-2);font-weight:600}
+
+.aviso{
+  margin-top:22px;padding:13px 17px;border-radius:10px;
+  background:rgba(242,176,30,.1);
+  border:1px solid rgba(242,176,30,.32);
+  border-left:3px solid var(--atencao);
+  color:#F6D89A;font-size:13.5px;
+}
+
+/* ---------- seções ---------- */
+section{margin-bottom:46px}
+h2{
+  font-size:12px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--ink-3);margin-bottom:18px;
+  display:flex;align-items:center;gap:12px;
+}
+h2::after{content:"";flex:1;height:1px;background:var(--linha)}
+
+/* ---------- KPIs ---------- */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:14px}
+.kpi{
+  background:var(--surface);border:1px solid var(--linha);
+  border-radius:var(--r);padding:20px 22px;
+}
+.kpi .rot{font-size:11.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3)}
+.kpi .val{font-size:31px;font-weight:700;letter-spacing:-.03em;margin-top:9px;font-variant-numeric:tabular-nums}
+.kpi .sub{font-size:12.5px;color:var(--ink-3);margin-top:5px}
+.kpi .sub .up{color:var(--critico)}
+.kpi .sub .down{color:var(--bom)}
+.kpi.destaque{border-color:rgba(108,108,255,.5);background:linear-gradient(160deg,rgba(108,108,255,.13),var(--surface) 62%)}
+
+/* ---------- tabela ---------- */
+.tab-wrap{overflow-x:auto;border:1px solid var(--linha);border-radius:var(--r);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14.5px;min-width:620px}
+th{
+  text-align:left;padding:13px 18px;font-size:11px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
+  border-bottom:1px solid var(--linha);white-space:nowrap;
+}
+td{padding:14px 18px;border-bottom:1px solid var(--linha);font-variant-numeric:tabular-nums}
+tbody tr:last-child td{border-bottom:none}
+th.num,td.num{text-align:right}
+tr.total td{background:var(--surface-2);font-weight:700;color:var(--ink)}
+.chip{display:inline-flex;align-items:center;gap:9px;font-weight:600;white-space:nowrap}
+.chip::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--c);flex:none}
+.chip.tof{--c:var(--tof)} .chip.mof{--c:var(--mof)} .chip.bof{--c:var(--bof)}
+
+/* célula de dia sem entrega: cor de status vem sempre com o glifo, nunca sozinha */
+td.zero{color:var(--critico);font-weight:700}
+td.zero::before{content:"▲ ";font-size:10px;vertical-align:1px}
+
+/* ---------- pílulas de status ---------- */
+.pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 10px;border-radius:999px;
+  font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+  white-space:nowrap;
+}
+.pill::before{font-size:12px;line-height:1}
+.pill.fail{background:rgba(242,65,90,.15);color:#FF8FA3;border:1px solid rgba(242,65,90,.4)}
+.pill.fail::before{content:"▲"}
+.pill.warn{background:rgba(242,176,30,.14);color:#F6D89A;border:1px solid rgba(242,176,30,.4)}
+.pill.warn::before{content:"●"}
+.pill.pass{background:rgba(47,191,113,.14);color:#7FE0A8;border:1px solid rgba(47,191,113,.4)}
+.pill.pass::before{content:"✓"}
+
+/* ---------- gráficos ---------- */
+.graficos{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:860px){.graficos{grid-template-columns:1.15fr 1fr}}
+.card{background:var(--surface);border:1px solid var(--linha);border-radius:var(--r);padding:22px}
+.card h3{font-size:14.5px;font-weight:600;letter-spacing:-.01em;margin-bottom:3px}
+.card .desc{font-size:12.5px;color:var(--ink-3);margin-bottom:18px}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.grid-line{stroke:var(--linha);stroke-width:1}
+.eixo{fill:var(--ink-3);font-size:10.5px;font-family:var(--fonte)}
+.meta-line{stroke:var(--atencao);stroke-width:1.5;stroke-dasharray:5 4;opacity:.8}
+.meta-rot{fill:var(--atencao);font-size:10px;font-weight:600;font-family:var(--fonte)}
+.rotulo-dado{fill:var(--ink);font-size:11.5px;font-weight:700;font-family:var(--fonte);font-variant-numeric:tabular-nums}
+.barra{transition:opacity .12s}
+.barra:hover{opacity:.82}
+.sm-titulo{fill:var(--ink-2);font-size:11.5px;font-weight:700;font-family:var(--fonte)}
+.sm-valor{font-size:11px;font-family:var(--fonte);font-variant-numeric:tabular-nums}
+.legenda{display:flex;flex-wrap:wrap;gap:16px;margin-top:14px;font-size:12.5px;color:var(--ink-3)}
+.legenda span{display:inline-flex;align-items:center;gap:7px}
+.legenda i{width:11px;height:11px;border-radius:3px;background:var(--c);display:inline-block}
+
+#tip{
+  position:fixed;pointer-events:none;opacity:0;transform:translate(-50%,-120%);
+  background:#12121F;border:1px solid var(--linha);border-radius:9px;
+  padding:9px 12px;font-size:12.5px;line-height:1.5;color:var(--ink);
+  box-shadow:0 8px 26px rgba(0,0,0,.55);z-index:60;white-space:nowrap;
+  transition:opacity .1s;font-variant-numeric:tabular-nums;
+}
+#tip b{color:var(--ink)}
+#tip .t-rot{color:var(--ink-3);font-size:11px;text-transform:uppercase;letter-spacing:.07em}
+
+/* ---------- criativos ---------- */
+.criativo-etapa{
+  background:var(--surface);border:1px solid var(--linha);
+  border-left:3px solid var(--c);border-radius:10px;
+  padding:16px 20px;margin-bottom:11px;
+}
+.criativo-etapa.tof{--c:var(--tof)} .criativo-etapa.mof{--c:var(--mof)} .criativo-etapa.bof{--c:var(--bof)}
+.criativo-etapa strong{color:var(--ink);font-weight:700}
+.criativo-etapa .et{
+  font-size:11px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--c);display:block;margin-bottom:6px;
+}
+.criativo-etapa p{color:var(--ink-2);font-size:14.5px}
+
+/* ---------- próximos passos ---------- */
+ol.passos{list-style:none;counter-reset:p}
+ol.passos li{
+  counter-increment:p;position:relative;
+  padding:15px 20px 15px 56px;margin-bottom:10px;
+  background:var(--surface);border:1px solid var(--linha);border-radius:10px;
+  color:var(--ink-2);font-size:14.5px;
+}
+ol.passos li::before{
+  content:counter(p);position:absolute;left:18px;top:15px;
+  width:24px;height:24px;border-radius:7px;
+  background:rgba(108,108,255,.17);color:var(--lavanda);
+  font-size:12.5px;font-weight:700;
+  display:grid;place-items:center;
+}
+ol.passos li b{color:var(--ink)}
+
+/* ---------- insight ---------- */
+.insight{
+  background:linear-gradient(140deg,rgba(108,108,255,.15),rgba(176,175,255,.05));
+  border:1px solid rgba(108,108,255,.34);border-radius:var(--r);
+  padding:26px 30px;font-size:16.5px;line-height:1.62;color:var(--ink);
+}
+
+footer{
+  margin-top:56px;padding-top:22px;border-top:1px solid var(--linha);
+  color:var(--ink-3);font-size:12.5px;
+  display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;
+}
+
+@media print{
+  body{background:#fff;color:#111}
+  .card,.kpi,.tab-wrap,.criativo-etapa,ol.passos li{background:#fff;border-color:#D6E1EA}
+  h1,.kpi .val,.insight{color:#1A1A2D}
+  #tip{display:none}
+  section{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="marca">Tastto · Tráfego Pago</div>
+  <h1>Relatório de Tráfego <span class="sem">— Semana {{SEMANA_N}}</span></h1>
+  <div class="meta-head">
+    <div>Período: <b>{{PERIODO}}</b></div>
+    <div>Conta: <b>{{CONTA}}</b></div>
+    <div>Gerado em: <b>{{GERADO_EM}}</b></div>
+  </div>
+  {{AVISO_PARCIAL}}
+</header>
+
+<section>
+  <h2>Resumo da semana</h2>
+  <div class="kpis">{{KPI_CARDS}}</div>
+</section>
+
+<section>
+  <h2>Funil</h2>
+  <div class="tab-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Etapa</th>
+          <th class="num">Investimento</th>
+          <th class="num">Resultado</th>
+          <th class="num">Custo</th>
+          <th class="num">CTR</th>
+        </tr>
+      </thead>
+      <tbody>{{TABELA_FUNIL}}</tbody>
+    </table>
+  </div>
+</section>
+
+{{ENTREGA_POR_DIA}}
+
+<section>
+  <h2>Tendência</h2>
+  <div class="graficos">
+    <div class="card">
+      <h3>CPL de BoF por semana</h3>
+      <div class="desc">Barras hachuradas são semanas parciais. Linha tracejada é a meta.</div>
+      <div id="g-cpl"></div>
+    </div>
+    <div class="card">
+      <h3>CTR por etapa</h3>
+      <div class="desc" id="g-ctr-desc">Mesma escala nos três painéis, pra comparar altura de verdade.</div>
+      <div id="g-ctr"></div>
+      <div class="legenda">
+        <span style="--c:var(--tof)"><i></i>ToF</span>
+        <span style="--c:var(--mof)"><i></i>MoF</span>
+        <span style="--c:var(--bof)"><i></i>BoF</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Auditoria — {{RESUMO_CHECKS}}</h2>
+  <div class="tab-wrap">
+    <table>
+      <thead>
+        <tr><th>Check</th><th>Status</th><th>Número</th><th>Ação</th></tr>
+      </thead>
+      <tbody>{{AUDITORIA}}</tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>Criativos</h2>
+  {{CRIATIVOS}}
+</section>
+
+<section>
+  <h2>Próximos passos</h2>
+  <ol class="passos">{{PROXIMOS_PASSOS}}</ol>
+</section>
+
+<section>
+  <h2>Insight da semana</h2>
+  <div class="insight">{{INSIGHT}}</div>
+</section>
+
+<footer>
+  <div>{{RESPONSAVEL}}</div>
+  <div>Grupo Arttico · gerado por <code>/relatorio-semanal-tastto</code></div>
+</footer>
+
+</div>
+<div id="tip"></div>
+
+<script>
+const DADOS = {{DADOS_JSON}};
+
+const tip = document.getElementById('tip');
+const brl = v => 'R$ ' + v.toFixed(2).replace('.', ',');
+const pct = v => v.toFixed(2).replace('.', ',') + '%';
+const dia = f => { const [, m, d] = f.split('-'); return d + '/' + m; };
+
+function ligarTip(el, html) {
+  el.addEventListener('mouseenter', e => {
+    tip.innerHTML = html;
+    tip.style.opacity = 1;
+    mover(e);
+  });
+  el.addEventListener('mousemove', mover);
+  el.addEventListener('mouseleave', () => tip.style.opacity = 0);
+  function mover(e) {
+    tip.style.left = e.clientX + 'px';
+    tip.style.top = e.clientY - 8 + 'px';
+  }
+}
+
+const NS = 'http://www.w3.org/2000/svg';
+const cria = (t, a = {}) => {
+  const e = document.createElementNS(NS, t);
+  for (const k in a) e.setAttribute(k, a[k]);
+  return e;
+};
+
+/* ---------- gráfico 1: CPL por semana ---------- */
+function graficoCPL() {
+  const sem = DADOS.semanas.filter(s => s.cpl_bof != null);
+  if (!sem.length) return;
+
+  // mr generoso: o rótulo da meta vive fora da área de plotagem, nunca colide
+  const W = 560, H = 260, ml = 46, mr = 64, mt = 22, mb = 34;
+  const iw = W - ml - mr, ih = H - mt - mb;
+  const meta = DADOS.metas.cpl_bof;
+  const max = Math.max(...sem.map(s => s.cpl_bof), meta) * 1.18;
+  const y = v => mt + ih - (v / max) * ih;
+
+  const svg = cria('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img',
+    'aria-label': 'CPL de BoF por semana, com linha de meta' });
+
+  // hachura para semanas parciais (textura = codificação secundária)
+  const defs = cria('defs');
+  const pat = cria('pattern', { id: 'hach', width: 6, height: 6,
+    patternUnits: 'userSpaceOnUse', patternTransform: 'rotate(45)' });
+  pat.appendChild(cria('rect', { width: 6, height: 6, fill: 'var(--tof)', opacity: .34 }));
+  pat.appendChild(cria('rect', { width: 2.5, height: 6, fill: 'var(--tof)' }));
+  defs.appendChild(pat);
+  svg.appendChild(defs);
+
+  // grade + eixo Y
+  const passo = max > 60 ? 20 : 10;
+  for (let v = 0; v <= max; v += passo) {
+    svg.appendChild(cria('line', { x1: ml, x2: W - mr, y1: y(v), y2: y(v), class: 'grid-line' }));
+    const t = cria('text', { x: ml - 9, y: y(v) + 3.5, class: 'eixo', 'text-anchor': 'end' });
+    t.textContent = 'R$' + v;
+    svg.appendChild(t);
+  }
+
+  // barras
+  const bw = Math.min(38, iw / sem.length * .58);
+  const passoX = iw / sem.length;
+  sem.forEach((s, i) => {
+    const cx = ml + passoX * (i + .5);
+    const alt = Math.max(2, mt + ih - y(s.cpl_bof));
+    const b = cria('rect', {
+      x: cx - bw / 2, y: y(s.cpl_bof), width: bw, height: alt,
+      rx: 4, class: 'barra',
+      fill: s.parcial ? 'url(#hach)' : 'var(--tof)'
+    });
+    ligarTip(b, `<div class="t-rot">Semana ${s.n} · ${dia(s.fim)}</div>
+      <b>${brl(s.cpl_bof)}</b> de CPL${s.parcial ? ' · parcial' : ''}`);
+    svg.appendChild(b);
+
+    const rot = cria('text', { x: cx, y: H - 12, class: 'eixo', 'text-anchor': 'middle' });
+    rot.textContent = 'S' + s.n;
+    svg.appendChild(rot);
+  });
+
+  // rótulo direto só na última barra
+  const ult = sem[sem.length - 1];
+  const lx = ml + passoX * (sem.length - .5);
+  const lb = cria('text', { x: lx, y: y(ult.cpl_bof) - 9, class: 'rotulo-dado', 'text-anchor': 'middle' });
+  lb.textContent = brl(ult.cpl_bof);
+  svg.appendChild(lb);
+
+  // linha de meta por cima, com o rótulo na margem direita
+  svg.appendChild(cria('line', { x1: ml, x2: W - mr, y1: y(meta), y2: y(meta), class: 'meta-line' }));
+  const mt2 = cria('text', { x: W - mr + 8, y: y(meta) + 3.5, class: 'meta-rot' });
+  mt2.textContent = 'meta R$' + meta;
+  svg.appendChild(mt2);
+
+  document.getElementById('g-cpl').appendChild(svg);
+}
+
+/* ---------- gráfico 2: CTR por etapa (small multiples) ---------- */
+function graficoCTR() {
+  const sem = DADOS.semanas;
+  const etapas = [
+    { k: 'tof', nome: 'ToF', cor: 'var(--tof)' },
+    { k: 'mof', nome: 'MoF', cor: 'var(--mof)' },
+    { k: 'bof', nome: 'BoF', cor: 'var(--bof)' }
+  ];
+  const todos = etapas.flatMap(e => sem.map(s => s[e.k] && s[e.k].ctr).filter(v => v != null));
+  if (!todos.length) return;
+  const max = Math.max(...todos) * 1.22;
+
+  // A escala é compartilhada, então precisa estar escrita — senão a altura
+  // relativa entre os painéis não significa nada pra quem lê.
+  const desc = document.getElementById('g-ctr-desc');
+  if (desc) desc.textContent =
+    `Mesma escala nos três painéis (0 a ${Math.ceil(max)}%), pra comparar altura de verdade.`;
+
+  const W = 460, alt = 74, gap = 12, ml = 34, mr = 12;
+  const H = etapas.length * (alt + gap) + 6;
+  const iw = W - ml - mr;
+  const svg = cria('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img',
+    'aria-label': 'CTR semanal por etapa do funil' });
+
+  etapas.forEach((e, idx) => {
+    const top = idx * (alt + gap);
+    const ih = alt - 22;
+    const y = v => top + 18 + ih - (v / max) * ih;
+
+    svg.appendChild(cria('line', { x1: ml, x2: W - mr, y1: top + 18 + ih, y2: top + 18 + ih, class: 'grid-line' }));
+
+    const tit = cria('text', { x: 0, y: top + 12, class: 'sm-titulo' });
+    tit.textContent = e.nome;
+    svg.appendChild(tit);
+
+    // Escala compartilhada deixa o ToF quase reto. O intervalo primeiro→último
+    // fica escrito no cabeçalho do painel pra tendência não sumir.
+    const serie = sem.map(s => s[e.k] && s[e.k].ctr).filter(v => v != null);
+    if (serie.length > 1) {
+      const faixa = cria('text', { x: W - mr, y: top + 12, class: 'sm-valor',
+        fill: 'var(--ink-3)', 'text-anchor': 'end' });
+      faixa.textContent = pct(serie[0]) + ' → ';
+      const fim = cria('tspan', { fill: e.cor, 'font-weight': 700 });
+      fim.textContent = pct(serie[serie.length - 1]);
+      faixa.appendChild(fim);
+      svg.appendChild(faixa);
+    }
+
+    const pts = sem.map((s, i) => {
+      const v = s[e.k] && s[e.k].ctr;
+      return v == null ? null : { x: ml + iw * (sem.length === 1 ? .5 : i / (sem.length - 1)), y: y(v), v, s };
+    }).filter(Boolean);
+    if (!pts.length) return;
+
+    // área
+    const dArea = `M${pts[0].x},${top + 18 + ih} ` + pts.map(p => `L${p.x},${p.y}`).join(' ')
+      + ` L${pts[pts.length - 1].x},${top + 18 + ih} Z`;
+    svg.appendChild(cria('path', { d: dArea, fill: e.cor, opacity: .13 }));
+
+    // linha 2px
+    svg.appendChild(cria('path', {
+      d: 'M' + pts.map(p => `${p.x},${p.y}`).join(' L'),
+      fill: 'none', stroke: e.cor, 'stroke-width': 2,
+      'stroke-linecap': 'round', 'stroke-linejoin': 'round'
+    }));
+
+    // marcadores com anel na superfície
+    pts.forEach(p => {
+      svg.appendChild(cria('circle', { cx: p.x, cy: p.y, r: 4,
+        fill: e.cor, stroke: 'var(--surface)', 'stroke-width': 2 }));
+      const alvo = cria('circle', { cx: p.x, cy: p.y, r: 11, fill: 'transparent' });
+      ligarTip(alvo, `<div class="t-rot">${e.nome} · Semana ${p.s.n}</div><b>${pct(p.v)}</b> de CTR`);
+      svg.appendChild(alvo);
+    });
+
+    // último ponto em destaque (o valor já está escrito no cabeçalho do painel)
+    const ult = pts[pts.length - 1];
+    svg.appendChild(cria('circle', { cx: ult.x, cy: ult.y, r: 5.5,
+      fill: e.cor, stroke: 'var(--surface)', 'stroke-width': 2 }));
+  });
+
+  document.getElementById('g-ctr').appendChild(svg);
+}
+
+graficoCPL();
+graficoCTR();
+</script>
+</body>
+</html>

@@ -2,7 +2,8 @@
 name: direcionamento-criativos
 description: >
   Cria o Direcionamento de Criativos de um cliente: uma apresentação em folha vertical (retrato)
-  no padrão da Arttico (sistema "Disciplina Ártica": navy + branco, Montserrat + Inter), com
+  no padrão da Arttico, em dois layouts a escolher ("Disciplina Ártica": navy + branco, ou
+  "Aurora Ártica": gradiente navy > teal + accent gelo; ambos Montserrat + Inter), com
   briefing técnico das peças, avatar (boneco line-art + dores e desejos) e roteiros de criativo
   por etapa de funil (topo, meio e fundo). Os roteiros são cena a cena, em tabela
   Arte | Texto | Imagem | Observações, prontos pra gravar e editar. O fundo de funil sempre traz
@@ -45,11 +46,15 @@ Antes de roteirizar, confirmar com o usuário:
   produto, perguntar qual é o foco.
 - **Quantidade e mix de peças** (ex: 3 vídeos + 1 estático).
 - **Formato e veiculação** (padrão: Story 1080x1920, Meta Ads).
+- **Layout do deck** — perguntar qual dos dois usar (ver seção 4):
+  - **Disciplina Ártica** (padrão) — navy chapado, branco como único destaque.
+  - **Aurora Ártica** — gradiente navy > teal, accent gelo, tabela com header sólido.
 
 Apresentar assim e parar pra aprovação:
 
 > **Direcionamento de Criativos — [Cliente]**
 > Produto/oferta: [...] · Peças: [...] · Formato: [Story 1080x1920] · Veiculação: [Meta Ads]
+> Layout: [Disciplina Ártica | Aurora Ártica]
 >
 > Aprova essa direção ou quer ajustar?
 
@@ -62,17 +67,34 @@ Com base em **dores + desejos do avatar + briefing**, montar e mostrar pro usuá
 Ajustar se o usuário pedir antes de gerar o PDF.
 
 ### 4. Montar o deck (formato oficial)
-Montar a partir de `SKILL_FILES/template-criativos.html` (folha vertical 1080x1528). **Identidade
-ARTTICO sempre** (Disciplina Ártica, navy #00002c), mesmo quando o cliente tem marca própria: o
-design-guide do cliente vale só pras peças/anexos, nunca pro deck.
+Dois layouts disponíveis, mesma folha vertical 1080x1528, mesma estrutura e **os mesmos tokens**.
+A escolha foi feita no checkpoint 2:
 
-> **Modelo pronto (versão ideal):** `SKILL_FILES/referencia-direcionamento.html` (exemplo real:
-> Garagem do Particular, 11 solicitações). Deck enxuto: Capa, Briefing, Avatar, Solicitações e
-> Fechamento. Padrões que ele estabelece:
+| Layout | Arquivo | Cara |
+|---|---|---|
+| **Disciplina Ártica** (padrão) | `SKILL_FILES/template-criativos.html` | Navy `#00002c` chapado, cards `#0a0a3d`, branco como único destaque. Sóbrio. |
+| **Aurora Ártica** | `SKILL_FILES/template-criativos-aurora.html` | Gradiente navy > teal, accent gelo `#a9e2f2`, capa com logo + seta, tabela com header sólido gelo, anexo na horizontal. |
+
+**Identidade ARTTICO sempre**, nos dois, mesmo quando o cliente tem marca própria: o design-guide
+do cliente vale só pras peças/anexos, nunca pro deck.
+
+O Aurora tem três tokens a mais, todos com fallback simples:
+- `{{COVER_FRENTES}}` (capa, ex: "Pacientes Modelo · Corpo Clínico"; sem frentes, usar
+  "Topo · Meio · Fundo de funil").
+- `{{AVATAR_NOME}}` (ex: "a paciente"). Com um avatar só, usar "dores e desejos". Com mais de um,
+  duplicar o slide de Avatar, um por frente.
+- `{{SOL_FRENTE}}` no eyebrow da Solicitação (ex: " · Pacientes Modelo"); sem frentes, deixar vazio.
+
+> **Modelos prontos:** `SKILL_FILES/referencia-direcionamento.html` (Disciplina Ártica, exemplo
+> real: Garagem do Particular, 11 solicitações) e `SKILL_FILES/referencia-aurora.html` +
+> `.pdf` (Aurora Ártica, exemplo: Clínica Velleza, com anexo de vídeo e de estático).
+> Deck enxuto nos dois: Capa, Briefing, Avatar, Solicitações e Fechamento. Padrões que estabelecem:
 > - **Estático é Solicitação** também, no mesmo formato de tabela (Arte | Texto | Imagem |
 >   Observações): 1 linha com headline + detalhes + CTA na coluna Texto.
 > - **Moldura de anexo abaixo do roteiro** nas solicitações que **têm referência** (o usuário
->   indica quais): tanto vídeo (`.attach.v`) quanto estático (`.attach.s`) são **1080x1920**.
+>   indica quais). No Disciplina Ártica, vídeo (`.attach.v`) e estático (`.attach.s`) são ambos
+>   **1080x1920**; no Aurora, vídeo é 9:16 e estático é 3:4, com a moldura na horizontal
+>   (rótulo "Vídeo referência" + divisor + thumb + link).
 >   Preencher o token `{{SOL_ANEXO}}` com a moldura; sem referência, deixar vazio. Quando a
 >   referência já existe (arquivo/link), a moldura vira a **thumb clicável** que redireciona ao link
 >   (vídeo: frame de capa + selo de play; imagem: a própria arte).
@@ -112,9 +134,15 @@ Estrutura:
 Exemplos de cena e das Solicitações UGC e notícia estão no rodapé do template em comentário:
 copiar, adaptar e **remover o comentário do arquivo final**.
 
-**Sistema de design (não desviar):** fundo `#00002c`, cards `#0a0a3d`, branco `#FFFFFF` é o único
-destaque. Display Montserrat ExtraBold; corpo Inter; serif (Lora) só no selo ARTTICO. Linha de
-horizonte com o traço `.run` de progresso. **Sem travessões.**
+**Sistema de design (não desviar):**
+- Comum aos dois: display Montserrat ExtraBold; corpo Inter; serif (Lora) só no selo ARTTICO.
+  Linha de horizonte com o traço `.run` de progresso. **Sem travessões.**
+- **Disciplina Ártica:** fundo `#00002c`, cards `#0a0a3d`, branco `#FFFFFF` é o único destaque.
+- **Aurora Ártica:** gradiente noite > teal, accent gelo `#a9e2f2` (subtítulo do avatar, header da
+  tabela, seta da capa, destaque do fechamento). **Nunca empilhar camadas de gradiente com
+  `rgba()`/`transparent` no fundo:** o Chromium exporta gradiente com alpha como shading + SMask
+  e a máscara corrompe a cor na conversão do PDF (o teal vira magenta). Um único gradiente
+  **opaco** por slide, como está no template.
 
 **Passo final obrigatório — numeração e progresso:** contar o total de slides `N` (após duplicar)
 e, em cada slide, preencher `.pageno` com `P / N` e `.run` com `style="width:<P/N×100>%"`.

@@ -1,0 +1,137 @@
+# ============================================================================
+# Otimizar Ads — Metas por Cliente
+# ============================================================================
+#
+# Este arquivo é o que dá poder de decisão ao agente.
+#
+# As Quality Gates do ads-ratos são TODAS relativas à meta:
+#   "CPA > 3x a meta"  →  sem meta, não existe kill rule.
+#
+# Enquanto `cpa_meta` estiver null, o agente cai no benchmark do nicho
+# (references/benchmarks-br.md) e MARCA a recomendação como
+# "baseada em benchmark, não na meta real do cliente".
+#
+# Preencher aos poucos. Cada cliente preenchido = decisões mais confiáveis.
+#
+# Campos:
+#   nicho          — chave pros benchmarks (leads, e-commerce, servicos, educacao)
+#   objetivo       — leads | vendas | trafego
+#   cpa_meta       — custo por lead/venda aceitável, em R$
+#   cpa_teto       — acima disso, pausar (default: 3x cpa_meta)
+#   roas_meta      — só pra objetivo=vendas
+#   budget_mensal  — verba total contratada, em R$
+#   ticket_medio   — ajuda o agente a julgar se o CPA faz sentido
+#
+# ============================================================================
+
+clientes:
+
+  click-cirurgia:
+    nicho: "servicos-saude"
+    objetivo: "leads"
+    cpa_meta: null          # PREENCHER
+    budget_mensal: 3000     # Meta + Google somados (do briefing)
+    ticket_medio: null
+    plataformas: ["meta", "google"]
+
+  geoenge:
+    nicho: "servicos-b2b"
+    objetivo: "leads"
+    cpa_meta: null          # PREENCHER
+    budget_mensal: null
+    ticket_medio: null
+    plataformas: ["meta", "google"]
+    notas: "Meta de negócio: sair de 2 reuniões/semana. Se souber a taxa lead→reunião, dá pra derivar o CPA teto."
+
+  pinheiro-borges:
+    nicho: "varejo-local"
+    objetivo: "vendas"
+    cpa_meta: null          # PREENCHER
+    roas_meta: null
+    budget_mensal: null
+    plataformas: ["meta", "google"]
+
+  limpa-fossa-parnamirim:
+    nicho: "servicos-local"
+    objetivo: "leads"
+    cpa_meta: null          # PREENCHER
+    budget_mensal: null
+    plataformas: ["google"]
+    notas: "Só Google. Sem conta Meta."
+
+  segantini:
+    nicho: "servicos-b2b"
+    objetivo: "leads"
+    cpa_meta: null          # PREENCHER
+    budget_mensal: null
+    plataformas: ["meta"]
+    notas: "Mesma conta Meta do Emprega Hub (act_1644447096395950). Separar por campanha."
+
+  jose-claudino:
+    nicho: "e-commerce"
+    objetivo: "vendas"
+    cpa_meta: null          # PREENCHER
+    roas_meta: null
+    budget_mensal: null
+    plataformas: ["meta"]
+    notas: "Faturamento atual ~R$40k/mês, meta R$60-80k em 12 meses."
+
+  flor-de-algodao:
+    nicho: "e-commerce"
+    objetivo: "vendas"
+    cpa_meta: null          # PREENCHER
+    roas_meta: null
+    plataformas: ["meta"]
+
+  igor-flor:
+    nicho: "servicos-saude"
+    objetivo: "leads"
+    cpa_meta: null          # PREENCHER
+    budget_mensal: 2000
+    plataformas: ["meta"]
+    notas: "ATENÇÃO: conta principal act_274784248411980 está DISABLED (atividade incomum). Só a reserva act_1411963154009411 roda."
+
+  mateus-medeiros:
+    nicho: "educacao"
+    objetivo: "vendas"
+    cpa_meta: null          # PREENCHER
+    plataformas: ["meta"]
+
+  rafael-medeiros:
+    nicho: "educacao"
+    objetivo: "leads"
+    cpa_meta: null          # PREENCHER
+    plataformas: ["meta"]
+
+  lize-edu:
+    nicho: "educacao"
+    objetivo: "leads"
+    cpa_meta: null          # PREENCHER
+    plataformas: ["meta", "google"]
+    notas: "Briefing diz Meta + Google, mas não há customer_id do Google cadastrado."
+
+  prime-gourmet-rn:
+    nicho: "assinatura"
+    objetivo: "vendas"
+    cpa_meta: null          # PREENCHER
+    plataformas: ["meta"]
+
+  prime-gourmet-pb:
+    nicho: "assinatura"
+    objetivo: "vendas"
+    cpa_meta: null          # PREENCHER
+    plataformas: ["meta"]
+
+  prime-gourmet-ce:
+    nicho: "assinatura"
+    objetivo: "vendas"
+    cpa_meta: null          # PREENCHER
+    plataformas: ["meta"]
+
+  garagem-particular:
+    nicho: "varejo-local"
+    objetivo: "leads"
+    cpa_meta: null          # PREENCHER
+    budget_mensal: 5500
+    plataformas: ["meta"]
+    notas: "Verba dividida: ~R$2k motos, ~R$2k carros, ~R$1,5k empréstimo. Conta Meta ainda não confirmada (acessos com o Caio)."

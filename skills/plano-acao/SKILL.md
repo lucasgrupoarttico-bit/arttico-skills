@@ -6,8 +6,9 @@ description: >
   aprovação e, depois de aprovado, detalha a campanha: no Google (objetivo, palavras-chave,
   títulos, descrições, sitelinks) e/ou no Meta (objetivo e criativos por funil), o avatar
   (público-alvo com boneco, dores e desejos), além do funil do lead até o comercial. Gera um deck
-  de slides 16:9 no padrão visual da Arttico (sistema "Disciplina Ártica": navy + branco,
-  Montserrat + Inter) em PDF e depois exporta pro Canva. O deck só inclui a plataforma escolhida.
+  de slides 16:9 no padrão visual da Arttico, em dois layouts a escolher ("Disciplina Ártica":
+  navy + branco, ou "Aurora Ártica": gradiente navy > teal + accent gelo; ambos Montserrat +
+  Inter) em PDF e depois exporta pro Canva. O deck só inclui a plataforma escolhida.
   O direcionamento de criativos (roteiros de peça por funil) é uma skill separada:
   `direcionamento-criativos`.
   Use quando o usuário disser "plano de ação", "planejamento de campanha", "monta o plano pro
@@ -58,8 +59,13 @@ Apresentar assim e **parar pra aprovação**:
 > **Plataforma sugerida: [Meta / Google / Ambos]**
 > Por quê: [2-3 linhas]
 > Distribuição de verba (se ambos): [ex: 60% Meta / 40% Google]
+> Layout do deck: [Disciplina Ártica | Aurora Ártica]
 >
 > Aprova essa direção ou quer ajustar?
+
+Perguntar também **qual layout** usar (ver seção 4):
+- **Disciplina Ártica** (padrão) — navy chapado, branco como único destaque.
+- **Aurora Ártica** — gradiente navy > teal, accent gelo.
 
 Não montar o conteúdo detalhado antes da aprovação.
 
@@ -106,9 +112,22 @@ Mostrar esse conteúdo pro usuário em texto **antes** de gerar o PDF (CHECKPOIN
 ele pedir.
 
 ### 4. CHECKPOINT 2 — Montar o deck (formato oficial)
-Depois do conteúdo aprovado, montar o **deck de slides 16:9** a partir de
-`SKILL_FILES/template-plano.html` (sistema "Disciplina Ártica"). É uma apresentação, não um
-documento A4.
+Depois do conteúdo aprovado, montar o **deck de slides 16:9**. É uma apresentação, não um
+documento A4. Dois layouts, mesma estrutura, **mesmos tokens e mesmos blocos**
+`BLOCO_GOOGLE_*` / `BLOCO_META_*` — troca só a pele. A escolha foi feita no checkpoint 1:
+
+| Layout | Arquivo | Cara |
+|---|---|---|
+| **Disciplina Ártica** (padrão) | `SKILL_FILES/template-plano.html` | Navy `#00002c` chapado, cards `#0a0a3d`, branco como único destaque. |
+| **Aurora Ártica** | `SKILL_FILES/template-plano-aurora.html` | Gradiente navy > teal, accent gelo `#a9e2f2`, capa com logo + seta, tabela com header sólido, cards com contorno. |
+
+No Aurora, a classe `.dim` dos títulos vale como accent gelo (não precisa reescrever slide
+nenhum: "Resultados <span class="dim">esperados</span>" já sai branco + gelo). O mesmo layout
+existe na skill `direcionamento-criativos` (`template-criativos-aurora.html`), então os dois
+documentos do mesmo cliente ficam com a mesma cara.
+
+Modelo pronto do Aurora: `SKILL_FILES/referencia-aurora.html` + `.pdf` (17 slides, Meta e Google,
+todos os componentes preenchidos: divider, avatar, tabela de keywords, verba, funil, criativos).
 
 > **Padrão Meta (usar sempre que a plataforma incluir Meta):** o modelo de referência é
 > `SKILL_FILES/referencia-meta.html` (exemplo real: Garagem do Particular, 3 produtos). Vale
@@ -131,11 +150,17 @@ documento A4.
 > > `.ph-frames` > `.ph-frame`) e como ajustar a quantidade de peças por etapa.
 
 **Sistema de design (não desviar):**
-- Fundo `#00002c`, cards `#0a0a3d`, **branco `#FFFFFF` é o único destaque**. Sem cor vibrante,
-  sem gradiente colorido (regra do `marca/design-guide.md`).
-- Display Montserrat ExtraBold; corpo Inter; serif (Lora) **só** no selo ARTTICO (é o logo).
-- Assinatura: a **linha de horizonte** com o traço `.run` que avança a cada slide (= progresso).
-- Numerais contornados gigantes (`.bignum`) só nos slides divisores.
+- Comum aos dois layouts: display Montserrat ExtraBold; corpo Inter; serif (Lora) **só** no selo
+  ARTTICO (é o logo). Assinatura: a **linha de horizonte** com o traço `.run` que avança a cada
+  slide (= progresso). Numerais contornados gigantes (`.bignum`) só nos slides divisores.
+- **Disciplina Ártica:** fundo `#00002c`, cards `#0a0a3d`, **branco `#FFFFFF` é o único
+  destaque**. Sem cor vibrante, sem gradiente colorido (regra do `marca/design-guide.md`).
+- **Aurora Ártica:** gradiente noite > teal, accent gelo `#a9e2f2`. **Nunca empilhar camadas de
+  gradiente com `rgba()`/`transparent` no fundo do `.slide`:** o Chromium exporta gradiente com
+  alpha como shading + SMask e a máscara corrompe a cor na conversão do PDF (o teal vira
+  magenta). Um único gradiente **opaco** por slide, como está no template.
+- **Apagar o comentário do topo do template** no arquivo final. Ele contém `-->`, que fecha o
+  comentário cedo e faz o texto vazar como conteúdo na capa (e cria uma página extra no PDF).
 
 **Regra crítica de plataforma:** o deck só contém a(s) plataforma(s) escolhida(s).
 - Só Meta → remover o bloco `<!-- BLOCO_GOOGLE_INICIO -->...<!-- BLOCO_GOOGLE_FIM -->`.
