@@ -1,4 +1,4 @@
-# 08 — Relatórios de performance
+# 09 — Relatórios de performance
 
 **Quando usar:** fechamento de semana ou de mês, hora de entregar os números pro cliente.
 
@@ -10,7 +10,7 @@
 ## Instalação
 
 ```bash
-cp -r skills/08-relatorios-de-performance/relatorio-cliente ~/.claude/skills/
+cp -r skills/09-relatorios-de-performance/relatorio-cliente ~/.claude/skills/
 ```
 
 > A pasta numerada só organiza este repositório. Copie **a pasta da skill**, nunca a pasta da categoria.

@@ -1,4 +1,4 @@
-# 10 — Apps e interfaces
+# 11 — Apps e interfaces
 
 **Quando usar:** o entregável não é campanha nem página, e sim um produto: ferramenta interna, SaaS ou qualquer tela que precise ficar bonita.
 
@@ -11,7 +11,7 @@
 ## Instalação
 
 ```bash
-cp -r skills/10-apps-e-interfaces/criar-app ~/.claude/skills/
+cp -r skills/11-apps-e-interfaces/criar-app ~/.claude/skills/
 ```
 
 > A pasta numerada só organiza este repositório. Copie **a pasta da skill**, nunca a pasta da categoria.

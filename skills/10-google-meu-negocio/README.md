@@ -1,4 +1,4 @@
-# 09 — Google Meu Negócio
+# 10 — Google Meu Negócio
 
 **Quando usar:** cliente com ponto físico que depende de busca local e precisa da ficha viva e bem avaliada.
 
@@ -9,7 +9,7 @@
 ## Instalação
 
 ```bash
-cp -r skills/09-google-meu-negocio/gmb-ratos ~/.claude/skills/
+cp -r skills/10-google-meu-negocio/gmb-ratos ~/.claude/skills/
 ```
 
 > A pasta numerada só organiza este repositório. Copie **a pasta da skill**, nunca a pasta da categoria.

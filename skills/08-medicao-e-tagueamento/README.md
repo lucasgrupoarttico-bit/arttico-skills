@@ -1,4 +1,4 @@
-# 07 — Medição e tagueamento
+# 08 — Medição e tagueamento
 
 **Quando usar:** cliente novo entrando (instalar a medição) ou dúvida sobre o que aconteceu no site depois do clique.
 
@@ -14,7 +14,7 @@
 ## Instalação
 
 ```bash
-cp -r skills/07-medicao-e-tagueamento/ga4-ratos ~/.claude/skills/
+cp -r skills/08-medicao-e-tagueamento/ga4-ratos ~/.claude/skills/
 ```
 
 > A pasta numerada só organiza este repositório. Copie **a pasta da skill**, nunca a pasta da categoria.

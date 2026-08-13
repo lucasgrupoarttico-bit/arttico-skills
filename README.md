@@ -15,12 +15,13 @@ As 23 skills estão em [`skills/`](skills/), organizadas na ordem do ciclo de um
 | [`02-pesquisa-e-concorrencia`](skills/02-pesquisa-e-concorrencia/) | Precisa saber o que o mercado já está rodando | 3 |
 | [`03-campanhas-meta-e-google`](skills/03-campanhas-meta-e-google/) | Vai subir, editar, pausar ou puxar números de campanha | 2 |
 | [`04-otimizacao-e-auditoria`](skills/04-otimizacao-e-auditoria/) | A conta travou e você precisa decidir onde mexer | 2 |
-| [`05-criativos-e-conteudo`](skills/05-criativos-e-conteudo/) | Hora de produzir a peça, do roteiro ao post publicado | 4 |
-| [`06-landing-pages-e-sites`](skills/06-landing-pages-e-sites/) | A página está lenta, a copy não converte ou falta publicar | 2 |
-| [`07-medicao-e-tagueamento`](skills/07-medicao-e-tagueamento/) | Vai instalar a medição ou entender o que rolou no site | 2 |
-| [`08-relatorios-de-performance`](skills/08-relatorios-de-performance/) | Fechamento de semana ou de mês pro cliente | 2 |
-| [`09-google-meu-negocio`](skills/09-google-meu-negocio/) | Cliente com ponto físico que vive de busca local | 1 |
-| [`10-apps-e-interfaces`](skills/10-apps-e-interfaces/) | O entregável é um produto, não uma campanha | 3 |
+| [`05-direcionamento-de-criativos`](skills/05-direcionamento-de-criativos/) | Precisa dizer ao time o que gravar e o que escrever | 1 |
+| [`06-criativos-e-conteudo`](skills/06-criativos-e-conteudo/) | O roteiro existe e falta produzir e publicar a peça | 3 |
+| [`07-landing-pages-e-sites`](skills/07-landing-pages-e-sites/) | A página está lenta, a copy não converte ou falta publicar | 2 |
+| [`08-medicao-e-tagueamento`](skills/08-medicao-e-tagueamento/) | Vai instalar a medição ou entender o que rolou no site | 2 |
+| [`09-relatorios-de-performance`](skills/09-relatorios-de-performance/) | Fechamento de semana ou de mês pro cliente | 2 |
+| [`10-google-meu-negocio`](skills/10-google-meu-negocio/) | Cliente com ponto físico que vive de busca local | 1 |
+| [`11-apps-e-interfaces`](skills/11-apps-e-interfaces/) | O entregável é um produto, não uma campanha | 3 |
 
 Cada pasta tem um `README.md` com a lista das skills, o que cada uma faz e como chamar. A lista completa está em [`skills/README.md`](skills/README.md).
 

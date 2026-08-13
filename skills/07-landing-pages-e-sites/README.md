@@ -1,4 +1,4 @@
-# 06 — Landing pages e sites
+# 07 — Landing pages e sites
 
 **Quando usar:** a página do cliente está lenta, a copy não converte, ou você precisa publicar o site.
 
@@ -10,8 +10,8 @@
 ## Instalação
 
 ```bash
-cp -r skills/06-landing-pages-e-sites/pagespeed ~/.claude/skills/
+cp -r skills/07-landing-pages-e-sites/pagespeed ~/.claude/skills/
 ```
 
 > A pasta numerada só organiza este repositório. Copie **a pasta da skill**, nunca a pasta da categoria.
-> `pagespeed` se integra com `ga4-ratos` ([`07-medicao-e-tagueamento`](../07-medicao-e-tagueamento/)) pra ler comportamento real de usuário.
+> `pagespeed` se integra com `ga4-ratos` ([`08-medicao-e-tagueamento`](../08-medicao-e-tagueamento/)) pra ler comportamento real de usuário.
